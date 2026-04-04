@@ -4,6 +4,7 @@
             <th>#</th>
             <th>Nama</th>
             <th>Email</th>
+            <th>No. HP</th>
             <th>Mapel & Kelas</th>
             <th>Aksi</th>
         </tr>
@@ -16,8 +17,9 @@
             <tr data-id="{{ $u->id }}">
 
                 <td>{{ $i + 1 }}</td>
-                <td>{{ $u->name }}</td>
-                <td>{{ $u->email }}</td>
+                <td class="teacher-name">{{ $u->name }}</td>
+                <td class="teacher-email">{{ $u->email }}</td>
+                <td class="teacher-phone">{{ $u->phone_num ?? '-' }}</td>
                 <td>
                     @if (count($mapel) > 0)
                         @php
@@ -51,15 +53,21 @@
                     @endif
                 </td>
                 <td>
-                    <button class="btn btn-warning btn-sm"
-                        onclick='editMapel({{ $u->id }}, @json($mapel), "{{ $u->name }}")'>
-                        Edit Mapel
-                    </button>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-info btn-sm"
+                            onclick='editTeacher({{ $u->id }}, "{{ $u->name }}", "{{ $u->email }}", "{{ $u->phone_num }}")'>
+                            Edit Profil
+                        </button>
 
-                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser({{ $u->id }})">
-                        Hapus
-                    </button>
+                        <button class="btn btn-warning btn-sm"
+                            onclick='editMapel({{ $u->id }}, @json($mapel), "{{ $u->name }}")'>
+                            Edit Mapel
+                        </button>
 
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser({{ $u->id }})">
+                            Hapus
+                        </button>
+                    </div>
                 </td>
             </tr>
         @empty

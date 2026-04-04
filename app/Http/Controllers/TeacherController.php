@@ -9,6 +9,31 @@ use Illuminate\Http\JsonResponse;
 
 class TeacherController extends Controller
 {
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $user = auth()->user();
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone_num' => 'nullable|string|max:20'
+        ]);
+
+        $user->name = $request->name;
+        $user->phone_num = $request->phone_num;
+        
+        if ($request->filled('password')) {
+            $request->validate(['password' => 'min:6']);
+            $user->password = Hash::make($request->password);
+        }
+        
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profil berhasil diperbarui.'
+        ]);
+    }
+
     /**
      * Store a newly created teacher.
      */
@@ -21,6 +46,7 @@ class TeacherController extends Controller
             'password' => 'required|string|min:6',
             'kelas'    => 'nullable|array',
             'mapel'    => 'nullable|array',
+            'phone_num' => 'nullable|string|max:20',
         ]);
 
         try {
@@ -43,7 +69,8 @@ class TeacherController extends Controller
                 'name'     => $request->name,
                 'email'    => $request->email,
                 'password' => Hash::make($request->password), // Gunakan Hash::make() vs bcrypt()
-                'mapel'    => $mapelData
+                'mapel'    => $mapelData,
+                'phone_num' => $request->phone_num
             ]);
 
             return response()->json([

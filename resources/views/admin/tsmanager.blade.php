@@ -355,6 +355,11 @@
                                     <input type="email" name="email" class="form-control" required
                                         placeholder="Email">
                                 </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label small fw-bold text-uppercase">Nomor HP:</label>
+                                    <input type="text" name="phone_num" class="form-control"
+                                        placeholder="Nomor HP (Contoh: 08123456789)">
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -854,6 +859,80 @@
                             });
                             loadTable();
                         });
+                }
+            });
+        }
+
+        function editTeacher(id, name, email, phone) {
+            Swal.fire({
+                title: 'Edit Profil Guru',
+                html: `
+                    <div class="text-left py-2">
+                        <label class="form-label small fw-bold">NAMA GURU:</label>
+                        <input type="text" id="editName" class="swal2-input m-0 w-100" value="${name}">
+                    </div>
+                    <div class="text-left py-2">
+                        <label class="form-label small fw-bold">EMAIL:</label>
+                        <input type="email" id="editEmail" class="swal2-input m-0 w-100" value="${email}">
+                    </div>
+                    <div class="text-left py-2">
+                        <label class="form-label small fw-bold">NOMOR HP:</label>
+                        <input type="text" id="editPhone" class="swal2-input m-0 w-100" value="${phone === 'null' ? '' : phone}" placeholder="08xxxxxxxx">
+                    </div>
+                    <div class="text-left py-2">
+                        <label class="form-label small fw-bold">PASSWORD BARU (KOSONGKAN JIKA TIDAK DIUBAH):</label>
+                        <input type="password" id="editPassword" class="swal2-input m-0 w-100" placeholder="Minimal 6 karakter">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan Perubahan',
+                cancelButtonText: 'Batal',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const name = document.getElementById('editName').value;
+                    const email = document.getElementById('editEmail').value;
+                    const phone = document.getElementById('editPhone').value;
+                    const password = document.getElementById('editPassword').value;
+
+                    if (!name || !email) {
+                        Swal.showValidationMessage('Nama dan Email wajib diisi');
+                        return false;
+                    }
+
+                    return { name, email, phone, password };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    fetch(`/admin/teacher/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(result.value)
+                    })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.status === 'success') {
+                            Toast.fire({
+                                icon: 'success',
+                                title: d.message
+                            });
+                            loadTable();
+                        } else {
+                            Swal.fire('Gagal', d.message || 'Terjadi kesalahan', 'error');
+                        }
+                    })
+                    .catch(e => {
+                        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+                    });
                 }
             });
         }

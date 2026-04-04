@@ -47,6 +47,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::delete('/student/{id}', 'deleteStudent')->name('delete.student');
             Route::put('/student/{id}/update-grade', 'updateGrade')->name('admin.student.updateGrade');
             Route::put('/teacher/{id}/mapel', 'updateTeacherMapel')->name('admin.teacher.updateMapel');
+            Route::put('/teacher/{id}', 'updateTeacher')->name('admin.teacher.update');
             Route::get('/teacher/table', 'teacherTable')->name('admin.teacher.table');
             Route::post('/import-teachers', 'importTeachers')->name('import.teachers');
         });
@@ -115,6 +116,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/show', 'showRekap')->name('rekap.show');
         Route::get('/presensi', 'showRekapPresensi')->name('rekap.showPresensi');
     });
+
+    // Profile Update
+    Route::post('/profile/update', [TeacherController::class, 'updateProfile'])->name('profile.update');
 });
 
 // Utility Routes

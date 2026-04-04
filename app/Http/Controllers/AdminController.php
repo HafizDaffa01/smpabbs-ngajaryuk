@@ -102,6 +102,31 @@ class AdminController extends Controller
     }
 
 
+    public function updateTeacher(Request $request, $id): JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'phone_num' => 'nullable|string|max:20'
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone_num = $request->phone_num;
+        
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data guru berhasil diperbarui.'
+        ]);
+    }
+
     public function updateTeacherMapel(Request $request, $id): JsonResponse
     {
         $request->validate([

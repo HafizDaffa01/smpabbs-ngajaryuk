@@ -86,8 +86,6 @@ class TeacherImport implements ToCollection, WithHeadingRow
         'tka ind' => 'TKA INDO',
         'tka indo' => 'TKA INDO',
         'ti' => 'TKA INDO',
-        'tka ing' => 'TKA English', 
-        'tka english' => 'TKA English',
 
         // Local Wisdom
         'bahasa jawa' => 'Javanese',
@@ -97,8 +95,15 @@ class TeacherImport implements ToCollection, WithHeadingRow
 
     private function mapSubject($rawSubject)
     {
-        // Remove trailing numbers appended by Excel row duplication (e.g. "leadership 1" -> "leadership")
-        $key = preg_replace('/\s+\d+$/', '', strtolower(trim($rawSubject)));
+        $rawSubject = trim($rawSubject);
+        if ($rawSubject === '' || $rawSubject === '-') return null;
+
+        // Remove trailing numbers appended by Excel row duplication
+        $key = preg_replace('/\s+\d+$/', '', strtolower($rawSubject));
+        
+        // If it's a number only, it's probably not a mapel name
+        if (is_numeric($key)) return null;
+
         return $this->mapelMapping[$key] ?? preg_replace('/\s+\d+$/', '', $rawSubject);
     }
 
@@ -217,7 +222,7 @@ class TeacherImport implements ToCollection, WithHeadingRow
             foreach ($rows->take(10) as $row) {
                 foreach ($row as $key => $cell) {
                     // Ignore predefined non-subject columns
-                    if (in_array(strtolower($key), ['nama', 'email', 'password', 'no', 'name'])) continue;
+                    if (in_array(strtolower($key), ['nama', 'email', 'password', 'no', 'name', 'number', 'num', 'hp', 'telepon', 'wa', 'whatsapp', 'phone'])) continue;
 
                     if (is_scalar($cell)) {
                         $cellStr = (string)$cell;
@@ -250,6 +255,7 @@ class TeacherImport implements ToCollection, WithHeadingRow
                 $nama = $row['nama'] ?? $row['name'] ?? null;
                 $email = $row['email'] ?? null;
                 $password = $row['password'] ?? null;
+                $phone = $row['hp'] ?? $row['telepon'] ?? $row['wa'] ?? $row['whatsapp'] ?? $row['phone'] ?? $row['num'] ?? $row['number'] ?? null;
 
                 if (!$nama) {
                     continue;
@@ -260,11 +266,11 @@ class TeacherImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
-                $user = new Teacher();
+                $user = Teacher::firstOrNew(['email' => $email]);
                 $user->name = $nama;
-                $user->email = $email;
                 $user->password = Hash::make($password);
                 $user->is_admin = 0;
+                $user->phone_num = $phone;
 
                 $rawItems = [];
 
@@ -275,10 +281,11 @@ class TeacherImport implements ToCollection, WithHeadingRow
                             $kelas = strtoupper((string)$key);
                             $items = preg_split('/\s*(?:&|\+|dan)\s*/i', $val);
                             foreach ($items as $m) {
-                                if (trim($m) !== '' && trim($m) !== '-') {
+                                $mapped = $this->mapSubject($m);
+                                if ($mapped && trim($mapped) !== '' && trim($mapped) !== '-') {
                                     $rawItems[] = [
                                         'kelas' => $kelas,
-                                        'mapel' => $this->mapSubject($m)
+                                        'mapel' => $mapped
                                     ];
                                 }
                             }
@@ -286,15 +293,18 @@ class TeacherImport implements ToCollection, WithHeadingRow
                     }
                 } elseif ($formatType === 'A') {
                     foreach ($row as $key => $val) {
-                        if (in_array(strtolower($key), ['no', 'nama', 'name', 'email', 'password', 'no'])) continue;
+                        if (in_array(strtolower($key), ['no', 'nama', 'name', 'email', 'password', 'number', 'num', 'hp', 'telepon', 'wa', 'whatsapp', 'phone'])) continue;
                         
                         if (is_scalar($val)) {
                             $strVal = (string)$val;
                             if (trim($strVal) !== '' && trim($strVal) !== '-') {
-                                $rawItems[] = [
-                                    'mapel' => $this->mapSubject(str_replace('_', ' ', $key)),
-                                    'kelas' => trim($strVal)
-                                ];
+                                $mapped = $this->mapSubject(str_replace('_', ' ', $key));
+                                if ($mapped && trim($mapped) !== '') {
+                                    $rawItems[] = [
+                                        'mapel' => $mapped,
+                                        'kelas' => trim($strVal)
+                                    ];
+                                }
                             }
                         }
                     }

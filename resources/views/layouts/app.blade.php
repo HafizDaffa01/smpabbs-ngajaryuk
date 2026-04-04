@@ -596,6 +596,9 @@
                                         <div class="fw-bold text-muted small">Signed in as</div>
                                         <div class="text-muted small truncate">{{ Auth::user()->email }}</div>
                                     </div>
+                                    <a class="dropdown-item py-2" href="javascript:void(0)" onclick="openProfileModal()">
+                                        <i class="fas fa-user-edit text-primary"></i> Edit Profil
+                                    </a>
                                     <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -616,6 +619,81 @@
             @yield('content')
         </main>
     </div>
+
+    @auth
+    <script>
+        function openProfileModal() {
+            Swal.fire({
+                title: 'Edit Profil Saya',
+                html: `
+                    <div class="text-start py-2">
+                        <label class="form-label small fw-bold">NAMA:</label>
+                        <input type="text" id="profName" class="swal2-input m-0 w-100" value="{{ Auth::user()->name }}">
+                    </div>
+                    <div class="text-start py-2">
+                        <label class="form-label small fw-bold">NOMOR HP:</label>
+                        <input type="text" id="profPhone" class="swal2-input m-0 w-100" value="{{ Auth::user()->phone_num }}" placeholder="08xxxxxxxx">
+                    </div>
+                    <div class="text-start py-2">
+                        <label class="form-label small fw-bold">PASSWORD BARU (KOSONGKAN JIKA TIDAK DIUBAH):</label>
+                        <input type="password" id="profPassword" class="swal2-input m-0 w-100" placeholder="Minimal 6 karakter">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const name = document.getElementById('profName').value;
+                    const phone_num = document.getElementById('profPhone').value;
+                    const password = document.getElementById('profPassword').value;
+
+                    if (!name) {
+                        Swal.showValidationMessage('Nama wajib diisi');
+                        return false;
+                    }
+
+                    return { name, phone_num, password };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    fetch("{{ route('profile.update') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(result.value)
+                    })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: d.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire('Gagal', d.message || 'Terjadi kesalahan', 'error');
+                        }
+                    })
+                    .catch(e => {
+                        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+                    });
+                }
+            });
+        }
+    </script>
+    @endauth
     @auth
         @if (!Auth::user()->is_admin)
             <div class="mobile-bottom-nav d-md-none">
