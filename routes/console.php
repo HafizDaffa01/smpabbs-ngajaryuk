@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use App\Models\Student;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Schedule;
 
+Schedule::command('send:whatsapp-alert')->dailyAt('08:00');
 
 // ======================
 // INSPIRE COMMAND

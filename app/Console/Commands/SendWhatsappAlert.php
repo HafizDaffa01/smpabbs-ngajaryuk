@@ -4,13 +4,15 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
+use App\Models\Absensi;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class SendWhatsappAlert extends Command
 {
     protected $signature = 'send:whatsapp-alert';
-    protected $description = 'Kirim WhatsApp ke semua user (jadwal harian)';
+    protected $description = 'Kirim WhatsApp otomatis berdasarkan absensi';
 
     public function handle()
     {
@@ -18,12 +20,7 @@ class SendWhatsappAlert extends Command
         $apiKey = env('FONNTE_API_KEY');
 
         if (!$apiKey) {
-            $this->error('[!] API KEY belum diset di .env');
-            return;
-        }
-
-        if ($users->isEmpty()) {
-            $this->error('[!] Tidak ada user dengan nomor HP');
+            $this->error('[!] API KEY belum diset');
             return;
         }
 
@@ -35,20 +32,25 @@ class SendWhatsappAlert extends Command
         $dayEn = now()->format('l');
         $dayId = $dayMap[$dayEn] ?? $dayEn;
         $tglNow = now()->format('d-m-Y');
+        $jamNow = now()->format('H:i');
 
         $total = $users->count();
 
-        $this->info("[i] Mulai kirim WhatsApp ke {$total} user...\n");
+        $this->info("[i] Mulai kirim ke {$total} user...\n");
 
         foreach ($users as $index => $user) {
 
             $phone = preg_replace('/[^0-9]/', '', $user->phone_num);
             $phone = ltrim($phone, '0');
 
-            if (!$phone) {
-                $this->error("[!] Nomor kosong / invalid untuk {$user->name}");
-                continue;
-            }
+            if (!$phone) continue;
+
+            $absen = Absensi::where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                      ->orWhere('nama', $user->name);
+                })
+                ->whereDate('waktu', now()->toDateString())
+                ->first();
 
             $schedules = Schedule::where('day', $dayEn)
                 ->where('teacher', 'LIKE', '%' . $user->name . '%')
@@ -56,17 +58,37 @@ class SendWhatsappAlert extends Command
                 ->get();
 
             $teachingList = $schedules->count() > 0 
-                ? $schedules->map(function($s) {
-                    return "- Jam *{$s->subject}* - Kelas *{$s->class_name}*";
-                })->implode("\n")
-                : "(Belum ada jadwal mengajar hari ini)";
+                ? $schedules->map(fn($s) => "- Jam {$s->period}: {$s->subject} ({$s->class_name})")->implode("\n")
+                : "(Tidak ada jadwal hari ini)";
 
-            $message = "[NgajarYuk]\n\nHalo *{$user->name}*, berikut jadwal mengajar Anda hari *{$dayId}*:\n\n"
-                . "{$teachingList}\n\n"
-                . "Jangan lupa mengisi jurnal harian ya!\n\n"
-                . "Pesan ini dikirim pada: {$tglNow}";
 
-            $this->info("[" . ($index+1) . "/{$total}] Kirim ke: {$phone}");
+
+            if ($absen) {
+
+                continue;
+
+            } else {
+
+                if ($jamNow >= '08:00') {
+
+                    $message = "[REMINDER ABSEN]\n\n"
+                        . "Halo *{$user->name}*, kami mendeteksi bahwa Anda *belum melakukan absensi hari ini* ❗\n\n"
+                        . "Mohon segera melakukan absensi dan mengisi jurnal harian agar data kehadiran tercatat dengan baik.\n\n"
+                        . "⏰ *Perhatian:* Absensi yang terlambat dapat mempengaruhi pencatatan kehadiran.\n\n"
+                        . "🔗 *Absen Sekarang:*\n"
+                        . "gurusmpabbs.alabidin.sch.id/absensi\n\n"
+                        . "🔗 *Isi Jurnal:*\n"
+                        . "gurusmpabbs.alabidin.sch.id/journal\n\n"
+                        . "Terima kasih atas perhatian dan kerjasamanya 🙏\n"
+                        . "Tanggal: {$tglNow}\n"
+                        . "Waktu: *{$jamNow}*";
+
+                } else {
+                    continue;
+                }
+            }
+
+            $this->info("[" . ($index+1) . "/{$total}] Kirim ke {$phone}");
 
             try {
                 $response = Http::withHeaders([
@@ -78,20 +100,18 @@ class SendWhatsappAlert extends Command
                 ]);
 
                 if ($response->successful()) {
-                    $this->info("[i] Berhasil ke {$phone}");
+                    $this->info("[i] Berhasil");
                 } else {
-                    $this->error("[!] Gagal ke {$phone}");
-                    $this->error($response->body());
+                    $this->error("[!] Gagal");
                 }
 
             } catch (\Exception $e) {
-                $this->error("[!] Error ke {$phone}");
-                $this->error($e->getMessage());
+                $this->error("[!] Error: " . $e->getMessage());
             }
 
-            usleep(500000); // 0.5 detik
+            usleep(500000);
         }
 
-        $this->info("\n[i] Selesai kirim semua WhatsApp!");
+        $this->info("\n[i] Selesai!");
     }
 }

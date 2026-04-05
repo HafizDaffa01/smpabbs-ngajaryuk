@@ -596,7 +596,7 @@
                                         <div class="fw-bold text-muted small">Signed in as</div>
                                         <div class="text-muted small truncate">{{ Auth::user()->email }}</div>
                                     </div>
-                                    <a class="dropdown-item py-2" href="javascript:void(0)" onclick="openProfileModal()">
+                                    <a class="dropdown-item py-2" href="{{ route('profile.edit') }}">
                                         <i class="fas fa-user-edit text-primary"></i> Edit Profil
                                     </a>
                                     <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}"
@@ -710,6 +710,11 @@
                     class="mobile-nav-link {{ Request::is('prevSmes*') ? 'active' : '' }}">
                     <i class="fas fa-history"></i>
                     <span>Rekap</span>
+                </a>
+                <a href="{{ route('profile.edit') }}"
+                    class="mobile-nav-link {{ Request::is('profile*') ? 'active' : '' }}">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profil</span>
                 </a>
                 <a href="{{ route('logout') }}" class="mobile-nav-link"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -89,6 +89,60 @@ class AbsensiController extends Controller
             'foto'    => $fotoName,
         ]);
 
+        $users = User::whereNotNull('phone_num')->get();
+        $apiKey = env('FONNTE_API_KEY');
+
+        $dayMap = [
+            'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu', 'Sunday' => 'Minggu'
+        ];
+
+        $dayEn = now()->format('l');
+        $dayId = $dayMap[$dayEn] ?? $dayEn;
+        $tglNow = now()->format('d-m-Y');
+        $jamNow = now()->format('H:i');
+
+        $phone = preg_replace('/[^0-9]/', '', $user->phone_num);
+        $phone = ltrim($phone, '0');
+
+        $absen = Absensi::where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhere('nama', $user->name);
+            })
+            ->whereDate('waktu', now()->toDateString())
+            ->first();
+
+        $schedules = Schedule::where('day', $dayEn)
+            ->where('teacher', 'LIKE', '%' . $user->name . '%')
+            ->orderBy('period')
+            ->get();
+
+        $teachingList = $schedules->count() > 0 
+            ? $schedules->map(fn($s) => "- Jam {$s->period}: {$s->subject} ({$s->class_name})")->implode("\n")
+            : "(Tidak ada jadwal hari ini)";
+
+
+        $jamAbsen = Carbon::parse($absen->waktu)->format('H:i');
+
+        $message = "[NgajarYuk]\n\n"
+            . "Halo *{$user->name}*, terima kasih sudah melakukan absensi pada jam *{$jamAbsen}* ✅\n\n"
+            . "Berikut jadwal mengajar Anda hari ini (*{$dayId}*):\n\n"
+            . "{$teachingList}\n\n"
+            . "📌 Jangan lupa untuk mengisi jurnal harian setelah kegiatan mengajar.\n\n"
+            . "🔗 *Isi Jurnal:*\n"
+            . "gurusmpabbs.alabidin.sch.id/journal\n\n"
+            . "Tetap semangat mengajar! 💪\n"
+            . "Tanggal: {$tglNow}\n\n"
+            . "Waktu : *{$jamNow}*";
+
+        Http::withHeaders([
+            'Authorization' => $apiKey,
+        ])->post('https://api.fonnte.com/send', [
+            'target' => $phone,
+            'message' => $message,
+            'countryCode' => '62',
+        ]);
+
         return redirect()->route('success')->with('success', 'Absensi berhasil disimpan!');
     }
 }

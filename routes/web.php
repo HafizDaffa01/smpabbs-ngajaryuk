@@ -13,6 +13,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\FileManagerController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -117,7 +118,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/presensi', 'showRekapPresensi')->name('rekap.showPresensi');
     });
 
-    // Profile Update
+    // Profile Update (New Page)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update_new');
+
+    // Profile Update (Legacy API for Modal)
     Route::post('/profile/update', [TeacherController::class, 'updateProfile'])->name('profile.update');
 });
 
