@@ -202,6 +202,63 @@ class AdminController extends Controller
         );
     }
 
+    public function deleteAbsensiByPeriod(Request $request): RedirectResponse
+    {
+        $month = $request->query('month');
+        $year = $request->query('year');
+        $withImage = $request->query('with_image', 0);
+
+        if (!$month || !$year) {
+            return back()->with('error', 'Bulan dan Tahun wajib dipilih!');
+        }
+
+        try {
+            // Debug: Cek contoh data asli di DB
+            $sample = Absensi::orderBy('waktu', 'desc')->first();
+            if ($sample) {
+                \Illuminate\Support\Facades\Log::info("DEBUG: Sample data '{$sample->nama}' waktu: '{$sample->waktu}'");
+            } else {
+                \Illuminate\Support\Facades\Log::info("DEBUG: Table absensis is empty!");
+            }
+
+            // Normalisasi bulan dan tahun
+            $date = Carbon::parse("1 $month $year");
+            $yearStr = $date->year;
+            $monthPadded = str_pad($date->month, 2, '0', STR_PAD_LEFT);
+            
+            $searchPattern = "{$yearStr}-{$monthPadded}-%";
+            $query = Absensi::where('waktu', 'LIKE', $searchPattern);
+            
+            $count = $query->count();
+            \Illuminate\Support\Facades\Log::info("DELETE ACTION: Pattern $searchPattern, Found: $count records.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("DELETE ERROR: " . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+
+        if ($count === 0) {
+            return back()->with('warning', "Data tidak ditemukan untuk pola: $searchPattern");
+        }
+
+        $deletedCount = 0;
+        $query->get()->each(function ($absen) use ($withImage, &$deletedCount) {
+            if ($withImage == 1 && $absen->foto) {
+                $path = public_path($absen->foto);
+                if (File::exists($path)) {
+                    File::delete($path);
+                }
+            }
+            if ($absen->delete()) {
+                $deletedCount++;
+            }
+        });
+
+        return back()->with(
+            'success',
+            "Berhasil menghapus $deletedCount data absensi untuk periode $month-$year." . ($withImage == 1 ? " Termasuk file gambar." : "")
+        );
+    }
+
     public function makeAdmin($id): RedirectResponse
     {
         $user = User::findOrFail($id);

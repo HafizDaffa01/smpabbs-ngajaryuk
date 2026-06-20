@@ -45,6 +45,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::delete('/user/{id}', 'deleteUser')->name('admin.deleteUser');
             Route::delete('/absensi/{id}', 'deleteAbsensi')->name('admin.deleteAbsensi');
             Route::get('/absensi/delete-all', 'deleteAllAbsensi')->name('admin.deleteAllAbsensi');
+            Route::get('/absensi/delete-by-period', 'deleteAbsensiByPeriod')->name('admin.deleteAbsensiByPeriod');
             Route::delete('/student/{id}', 'deleteStudent')->name('delete.student');
             Route::put('/student/{id}/update-grade', 'updateGrade')->name('admin.student.updateGrade');
             Route::put('/teacher/{id}/mapel', 'updateTeacherMapel')->name('admin.teacher.updateMapel');

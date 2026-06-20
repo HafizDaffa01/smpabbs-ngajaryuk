@@ -345,7 +345,11 @@
 
         {{-- =================== ACTION BUTTONS =================== --}}
         <div class="d-flex gap-2 mt-4">
-            <button type="button" class="btn btn-danger" onclick="openDeleteModal()">
+            <button type="button" class="btn btn-outline-danger" onclick="openDeleteByPeriodModal()">
+                <i class="fas fa-calendar-times me-1"></i>Hapus per Bulan
+            </button>
+
+            <button type="button" class="btn btn-outline-danger" onclick="openDeleteModal()">
                 <i class="fas fa-trash-alt me-1"></i>Hapus Semua Absensi
             </button>
 
@@ -596,6 +600,15 @@
 
         .table-wrapper::-webkit-scrollbar-thumb:hover {
             background: #64748b;
+        }
+
+        .btn-outline-danger {
+            border-width: 1.5px;
+        }
+
+        .btn-outline-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
         }
 
         /* --- RESPONSIVE --- */
@@ -947,6 +960,75 @@
                             window.location.href = "{{ url('/admin/absensi/delete-all?with_image=1') }}";
                         } else if (choice.isDenied) {
                             window.location.href = "{{ url('/admin/absensi/delete-all?with_image=0') }}";
+                        }
+                    });
+                }
+            });
+        }
+
+        function openDeleteByPeriodModal() {
+            Swal.fire({
+                title: '<i class="fas fa-calendar-alt"></i> Hapus data per Bulan',
+                html: `
+                    <div class="text-start mb-3">
+                        <label class="form-label small fw-bold">PILIH BULAN & TAHUN:</label>
+                        <input type="text" id="deletePeriodPicker" class="form-control" placeholder="Pilih Bulan & Tahun..">
+                    </div>
+                    <div class="form-check form-switch text-start mb-3">
+                        <input class="form-check-input" type="checkbox" id="deleteWithImage" style="cursor:pointer">
+                        <label class="form-check-label ps-2" for="deleteWithImage" style="cursor:pointer">
+                            Ikut hapus file gambar fisik?
+                        </label>
+                    </div>
+                    <div class="alert alert-warning py-2 mb-0">
+                        <small><i class="fas fa-exclamation-triangle me-1"></i> Data yang dihapus tidak dapat dikembalikan!</small>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-trash"></i> Hapus Data',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#dc3545',
+                didOpen: () => {
+                    flatpickr("#deletePeriodPicker", {
+                        locale: "id",
+                        plugins: [
+                            new monthSelectPlugin({
+                                shorthand: true,
+                                dateFormat: "F-Y",
+                                altFormat: "F Y",
+                                theme: "dark"
+                            })
+                        ]
+                    });
+                },
+                preConfirm: () => {
+                    const fp = document.getElementById('deletePeriodPicker')._flatpickr;
+                    const selectedDate = fp.selectedDates[0];
+                    if (!selectedDate) {
+                        Swal.showValidationMessage('Silakan pilih bulan dan tahun!');
+                        return false;
+                    }
+                    const month = selectedDate.getMonth() + 1;
+                    const year = selectedDate.getFullYear();
+                    const withImage = document.getElementById('deleteWithImage').checked ? 1 : 0;
+                    return { month, year, withImage };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { month, year, withImage } = result.value;
+                    const url = `{{ route('admin.deleteAbsensiByPeriod') }}?month=${month}&year=${year}&with_image=${withImage}`;
+                    
+                    Swal.fire({
+                        title: 'Konfirmasi Akhir',
+                        text: `Hapus semua data absensi bulan ${month} tahun ${year}?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#dc3545',
+                    }).then((confirm) => {
+                        if (confirm.isConfirmed) {
+                            window.location.href = url;
                         }
                     });
                 }

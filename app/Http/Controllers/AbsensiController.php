@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Absensi;
+use App\Models\User;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\Http;
 
 class AbsensiController extends Controller
 {
@@ -18,7 +21,7 @@ class AbsensiController extends Controller
     {
         // Cegah admin mengakses halaman absensi
         if (Auth::user()->is_admin) {
-            abort(403, 'Unauthorized. Hanya pengguna non-admin yang diizinkan.');
+            // abort(403, 'Unauthorized. Hanya pengguna non-admin yang diizinkan.');
         }
 
         $guruList = Teacher::all()->toArray();
@@ -50,7 +53,7 @@ class AbsensiController extends Controller
 
         if ($sudahAbsen) {
             $jamAbsen = Carbon::parse($sudahAbsen->waktu)->format('H:i');
-            return redirect()->route('error')->with('error', "Anda sudah absen pada jam {$jamAbsen}");
+            return redirect()->route('error')->with('error', "Anda sudah presensi pada jam {$jamAbsen}");
         }
 
         // 3. Proses File Base64 Menggunakan Facade Laravel
@@ -125,7 +128,7 @@ class AbsensiController extends Controller
         $jamAbsen = Carbon::parse($absen->waktu)->format('H:i');
 
         $message = "[NgajarYuk]\n\n"
-            . "Halo *{$user->name}*, terima kasih sudah melakukan absensi pada jam *{$jamAbsen}* ✅\n\n"
+            . "Halo *{$user->name}*, terima kasih sudah melakukan Presensi pada jam *{$jamAbsen}* ✅\n\n"
             . "Berikut jadwal mengajar Anda hari ini (*{$dayId}*):\n\n"
             . "{$teachingList}\n\n"
             . "📌 Jangan lupa untuk mengisi jurnal harian setelah kegiatan mengajar.\n\n"
@@ -143,6 +146,6 @@ class AbsensiController extends Controller
             'countryCode' => '62',
         ]);
 
-        return redirect()->route('success')->with('success', 'Absensi berhasil disimpan!');
+        return redirect()->route('success')->with('success', 'Presensi berhasil disimpan!');
     }
 }

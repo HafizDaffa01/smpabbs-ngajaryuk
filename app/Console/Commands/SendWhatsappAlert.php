@@ -71,11 +71,11 @@ class SendWhatsappAlert extends Command
 
                 if ($jamNow >= '08:00') {
 
-                    $message = "[REMINDER ABSEN]\n\n"
-                        . "Halo *{$user->name}*, kami mendeteksi bahwa Anda *belum melakukan absensi hari ini* ❗\n\n"
-                        . "Mohon segera melakukan absensi dan mengisi jurnal harian agar data kehadiran tercatat dengan baik.\n\n"
-                        . "⏰ *Perhatian:* Absensi yang terlambat dapat mempengaruhi pencatatan kehadiran.\n\n"
-                        . "🔗 *Absen Sekarang:*\n"
+                    $message = "[REMINDER PRESENSI]\n\n"
+                        . "Halo *{$user->name}*, kami mendeteksi bahwa Anda *belum melakukan Presensi hari ini* ❗\n\n"
+                        . "Mohon segera melakukan Presensi dan mengisi jurnal harian agar data kehadiran tercatat dengan baik.\n\n"
+                        . "⏰ *Perhatian:* Presensi yang terlambat dapat mempengaruhi pencatatan kehadiran.\n\n"
+                        . "🔗 *Presensi Sekarang:*\n"
                         . "gurusmpabbs.alabidin.sch.id/absensi\n\n"
                         . "🔗 *Isi Jurnal:*\n"
                         . "gurusmpabbs.alabidin.sch.id/journal\n\n"
