@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Absensi;
-use App\Models\User;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
 class AbsensiController extends Controller
@@ -19,11 +18,6 @@ class AbsensiController extends Controller
      */
     public function index()
     {
-        // Cegah admin mengakses halaman absensi
-        if (Auth::user()->is_admin) {
-            // abort(403, 'Unauthorized. Hanya pengguna non-admin yang diizinkan.');
-        }
-
         $guruList = Teacher::all()->toArray();
 
         return view('absensi.index', compact('guruList'));
@@ -92,7 +86,6 @@ class AbsensiController extends Controller
             'foto'    => $fotoName,
         ]);
 
-        $users = User::whereNotNull('phone_num')->get();
         $apiKey = env('FONNTE_API_KEY');
 
         $dayMap = [

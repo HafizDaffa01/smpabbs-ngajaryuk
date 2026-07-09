@@ -286,9 +286,11 @@
                     <div class="input-wrapper">
                         <select id="name" name="name" class="form-input @error('name') is-invalid @enderror" required>
                             <option value="" disabled selected>Pilih nama Anda...</option>
-                            @foreach($guruList as $guru)
+                            @forelse($guruList ?? [] as $guru)
                                 <option value="{{ $guru }}">{{ $guru }}</option>
-                            @endforeach
+                            @empty
+                                <option value="" disabled>Belum ada data guru</option>
+                            @endforelse
                         </select>
                         <i class="fas fa-user input-icon"></i>
                     </div>

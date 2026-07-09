@@ -12,20 +12,23 @@ class FileManagerController extends Controller
      */
     private function resolvePath(?string $path = ''): string
     {
-        // Prevent path traversal attacks
-        $path = str_replace(['../', '..\\', '..'], '', (string) $path);
-        
-        // Normalize directory separators
-        $path = trim($path, '/\\');
-        
         $basePath = public_path('uploads');
         
-        // Create base uploads directory if it doesn't exist
         if (!File::exists($basePath)) {
             File::makeDirectory($basePath, 0755, true);
         }
 
-        return $path ? $basePath . DIRECTORY_SEPARATOR . $path : $basePath;
+        if (!$path) {
+            return $basePath;
+        }
+
+        $resolved = realpath($basePath . DIRECTORY_SEPARATOR . $path);
+
+        if ($resolved === false || !str_starts_with($resolved, $basePath)) {
+            return $basePath;
+        }
+
+        return $resolved;
     }
 
     /**
@@ -90,7 +93,7 @@ class FileManagerController extends Controller
             // Periksa jika file sudah ada (opsional, ditiadakan agar overwrite atau ganti nama opsional, tapi default move akan overwrite)
             $file->move($fullPath, $fileName);
             
-            return back()->with('success', "File bershasil diunggah.");
+            return back()->with('success', "File berhasil diunggah.");
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal mengunggah file: ' . $e->getMessage());
         }

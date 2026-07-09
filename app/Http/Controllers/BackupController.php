@@ -137,9 +137,11 @@ class BackupController extends Controller
             $absen->update(['waktu' => $waktu]);
         } else {
             Absensi::create([
-                'nama'  => $nama,
-                'waktu' => $waktu,
-                'unit'  => Auth::user()->unit ?? '-', // default ambil dari user
+                'nama'   => $nama,
+                'waktu'  => $waktu,
+                'unit'   => Auth::user()->unit ?? '-',
+                'lokasi' => '-',
+                'foto'   => '-',
             ]);
         }
 
@@ -312,7 +314,7 @@ class BackupController extends Controller
             }
             $zip->close();
         } else {
-            return back()->with('error', 'Gagal membuat file archieve zip.');
+            return back()->with('error', 'Gagal membuat file archive zip.');
         }
 
         return response()->download($zipPath)->deleteFileAfterSend(true);

@@ -221,23 +221,21 @@ class AdminController extends Controller
                 \Illuminate\Support\Facades\Log::info("DEBUG: Table absensis is empty!");
             }
 
-            // Normalisasi bulan dan tahun
             $date = Carbon::parse("1 $month $year");
             $yearStr = $date->year;
-            $monthPadded = str_pad($date->month, 2, '0', STR_PAD_LEFT);
-            
-            $searchPattern = "{$yearStr}-{$monthPadded}-%";
-            $query = Absensi::where('waktu', 'LIKE', $searchPattern);
-            
+            $monthNum = $date->month;
+
+            $query = Absensi::whereYear('waktu', $yearStr)->whereMonth('waktu', $monthNum);
+
             $count = $query->count();
-            \Illuminate\Support\Facades\Log::info("DELETE ACTION: Pattern $searchPattern, Found: $count records.");
+            \Illuminate\Support\Facades\Log::info("DELETE ACTION: Month=$monthNum Year=$yearStr, Found: $count records.");
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("DELETE ERROR: " . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
         if ($count === 0) {
-            return back()->with('warning', "Data tidak ditemukan untuk pola: $searchPattern");
+            return back()->with('warning', "Data tidak ditemukan untuk bulan $month-$year.");
         }
 
         $deletedCount = 0;
