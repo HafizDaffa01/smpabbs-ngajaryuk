@@ -50,6 +50,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::put('/student/{id}/update-grade', 'updateGrade')->name('admin.student.updateGrade');
             Route::put('/teacher/{id}/mapel', 'updateTeacherMapel')->name('admin.teacher.updateMapel');
             Route::put('/teacher/{id}', 'updateTeacher')->name('admin.teacher.update');
+            Route::put('/user/{id}/make-admin', 'makeAdmin')->name('admin.makeAdmin');
+            Route::put('/user/{id}/remove-admin', 'removeAdmin')->name('admin.removeAdmin');
             Route::get('/teacher/table', 'teacherTable')->name('admin.teacher.table');
             Route::post('/import-teachers', 'importTeachers')->name('import.teachers');
         });

@@ -257,6 +257,28 @@ class AdminController extends Controller
         );
     }
 
+    public function deleteAbsensi($id): JsonResponse
+    {
+        $absen = Absensi::find($id);
+        if (!$absen) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data absensi tidak ditemukan'
+            ], 404);
+        }
+
+        if ($absen->foto && File::exists(public_path($absen->foto))) {
+            File::delete(public_path($absen->foto));
+        }
+
+        $absen->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data absensi berhasil dihapus.'
+        ]);
+    }
+
     public function makeAdmin($id): RedirectResponse
     {
         $user = User::findOrFail($id);
