@@ -33,7 +33,8 @@ class ScheduleController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls|max:10240'
+            'file' => 'required|file|mimes:xlsx,xls|max:10240',
+            'confirm' => 'required|accepted',
         ]);
 
         try {

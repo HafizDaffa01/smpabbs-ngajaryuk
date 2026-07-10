@@ -628,6 +628,30 @@
 
     {{-- =================== SCRIPT =================== --}}
     <script>
+        // === POST HELPER (for destructive routes) ===
+        function postWithQuery(url, params = {}) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+            const csrf = document.querySelector('meta[name="csrf-token"]');
+            if (csrf) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '_token';
+                input.value = csrf.getAttribute('content');
+                form.appendChild(input);
+            }
+            for (const [key, value] of Object.entries(params)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+
         // === MAP VIEWER ===
         function showMap(lokasi, nama, waktu, alamat) {
             const [lat, lon] = lokasi.split(',').map(x => parseFloat(x.trim()));
@@ -957,9 +981,9 @@
                         cancelButtonText: '<i class="fas fa-times"></i> Batal'
                     }).then((choice) => {
                         if (choice.isConfirmed) {
-                            window.location.href = "{{ url('/admin/absensi/delete-all?with_image=1') }}";
+                            postWithQuery('{{ url("/admin/absensi/delete-all") }}', {with_image: 1});
                         } else if (choice.isDenied) {
-                            window.location.href = "{{ url('/admin/absensi/delete-all?with_image=0') }}";
+                            postWithQuery('{{ url("/admin/absensi/delete-all") }}', {with_image: 0});
                         }
                     });
                 }
@@ -1016,7 +1040,6 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     const { month, year, withImage } = result.value;
-                    const url = `{{ route('admin.deleteAbsensiByPeriod') }}?month=${month}&year=${year}&with_image=${withImage}`;
                     
                     Swal.fire({
                         title: 'Konfirmasi Akhir',
@@ -1028,7 +1051,7 @@
                         confirmButtonColor: '#dc3545',
                     }).then((confirm) => {
                         if (confirm.isConfirmed) {
-                            window.location.href = url;
+                            postWithQuery('{{ url("/admin/absensi/delete-by-period") }}', {month, year, with_image: withImage});
                         }
                     });
                 }

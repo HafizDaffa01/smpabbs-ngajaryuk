@@ -77,6 +77,12 @@
                                     <i class="fas fa-upload me-1"></i>Import
                                 </button>
                             </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="confirm" value="1" id="importConfirm" required>
+                                <label class="form-check-label small text-danger fw-700" for="importConfirm">
+                                    Saya mengerti data lama akan dihapus dan digantikan
+                                </label>
+                            </div>
                             <div class="d-flex align-items-start mt-2">
                                 <i class="fas fa-info-circle text-primary me-2 mt-1 small"></i>
                                 <p class="small mb-0">

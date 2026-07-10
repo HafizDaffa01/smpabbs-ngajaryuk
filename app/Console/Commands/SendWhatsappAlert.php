@@ -17,7 +17,7 @@ class SendWhatsappAlert extends Command
     public function handle()
     {
         $users = User::whereNotNull('phone_num')->get();
-        $apiKey = env('FONNTE_API_KEY');
+        $apiKey = config('fonnte.api_key');
 
         if (!$apiKey) {
             $this->error('[!] API KEY belum diset');

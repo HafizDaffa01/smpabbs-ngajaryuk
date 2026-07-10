@@ -110,46 +110,7 @@ class Schedule extends Model
      */
     public static function normalizeSubject($subject)
     {
-        if (!$subject || is_array($subject)) return $subject;
-        
-        $subject = strtoupper(trim($subject));
-        
-        $mapping = [
-            'ICT' => ['ICT', 'KOMPUTER', 'COMPUTER', 'IT'],
-            'SPORT' => ['SPORT', 'PJOK', 'OLGA', 'OLAHRAGA', 'PHE'],
-            'Civics' => ['CIVIC', 'PKN', 'PPKN', 'CIVICS'],
-            'IFE' => ['IFE', 'AGAMA', 'ISLAM', 'PAI', 'BP'],
-            'Indonesian' => ['BINDO', 'INDO', 'INDONESIA', 'INDONESIAN', 'B. INDO'],
-            'Science' => ['IPA', 'SCIENCE'],
-            'Social' => ['SOCIAL', 'IPS'],
-            'TKA INDO' => ['TKA INDO', 'TKAINDO', 'TI', 'TKAIND', 'TKA IND'],
-            'TKA Mathematics' => ['TM', 'TKA MATH', 'TKAMATH', 'TKAMAT', 'TKA MATHEMATICS'],
-            'Quran' => ['QURAN', 'QUR\'AN', 'AL-QURAN', 'AQ'],
-            'English' => ['ENGLISH', 'INGGRIS', 'B. INGGRIS', 'ENG'],
-            'Mathematics' => ['MATH', 'MATHEMATICS', 'MATEMATIKA', 'MAT'],
-        ];
-
-        // 1. Cek Exact Match dulu (paling akurat)
-        foreach ($mapping as $normalized => $variants) {
-            foreach ($variants as $variant) {
-                if ($subject === $normalized || $subject === $variant) {
-                    return $normalized;
-                }
-            }
-        }
-
-        // 2. Cek Contains (untuk variasi yang lebih panjang atau spesifik)
-        foreach ($mapping as $normalized => $variants) {
-            foreach ($variants as $variant) {
-                // Hanya gunakan str_contains untuk variant yang panjangnya > 2 
-                // untuk menghindari 'TI' atau 'TM' nyangkut di kata lain
-                if (strlen($variant) > 2 && str_contains($subject, $variant)) {
-                    return $normalized;
-                }
-            }
-        }
-
-        return $subject; // Return original jika tidak ada mapping
+        return \App\Helpers\SubjectHelper::normalize($subject);
     }
 
     /**

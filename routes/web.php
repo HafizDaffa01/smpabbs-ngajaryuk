@@ -29,11 +29,13 @@ Route::get('/', function () {
     return Auth::user()->is_admin ? redirect('/admin') : redirect('/absensi');
 });
 
-// Auth routes (login/register)
-Auth::routes([
-    'reset' => false,
-    'verify' => false,
-]);
+// Auth routes (login/register) with rate limiting
+Route::middleware(['throttle:auth'])->group(function () {
+    Auth::routes([
+        'reset' => false,
+        'verify' => false,
+    ]);
+});
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -44,8 +46,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('/', 'index')->name('admin.index');
             Route::delete('/user/{id}', 'deleteUser')->name('admin.deleteUser');
             Route::delete('/absensi/{id}', 'deleteAbsensi')->name('admin.deleteAbsensi');
-            Route::get('/absensi/delete-all', 'deleteAllAbsensi')->name('admin.deleteAllAbsensi');
-            Route::get('/absensi/delete-by-period', 'deleteAbsensiByPeriod')->name('admin.deleteAbsensiByPeriod');
+            Route::post('/absensi/delete-all', 'deleteAllAbsensi')->name('admin.deleteAllAbsensi');
+            Route::post('/absensi/delete-by-period', 'deleteAbsensiByPeriod')->name('admin.deleteAbsensiByPeriod');
             Route::delete('/student/{id}', 'deleteStudent')->name('delete.student');
             Route::put('/student/{id}/update-grade', 'updateGrade')->name('admin.student.updateGrade');
             Route::put('/teacher/{id}/mapel', 'updateTeacherMapel')->name('admin.teacher.updateMapel');

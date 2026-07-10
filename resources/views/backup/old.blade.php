@@ -266,6 +266,29 @@ td:nth-child(2), th:nth-child(2) { min-width: 200px; max-width: 700px; }
 
 {{-- =================== SCRIPT =================== --}}
 <script>
+function postWithQuery(url, params = {}) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    const csrf = document.querySelector('meta[name="csrf-token"]');
+    if (csrf) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = '_token';
+        input.value = csrf.getAttribute('content');
+        form.appendChild(input);
+    }
+    for (const [key, value] of Object.entries(params)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+    document.body.appendChild(form);
+    form.submit();
+}
+
 function showMap(lokasi, nama, waktu) {
     const [lat, lon] = lokasi.split(',').map(x => parseFloat(x.trim()));
     Swal.fire({
@@ -414,10 +437,10 @@ function openDeleteModal() {
             }).then((choice)=>{
                 if(choice.isConfirmed){
                     Swal.fire({icon:'success',title:'Menghapus...',text:'Semua data absensi dan gambar sedang dihapus...',showConfirmButton:false,timer:1500});
-                    window.location.href="{{ url('/admin/absensi/delete-all?with_image=1') }}";
+                    postWithQuery('{{ url("/admin/absensi/delete-all") }}', {with_image: 1});
                 } else if(choice.dismiss===Swal.DismissReason.cancel){
                     Swal.fire({icon:'success',title:'Menghapus...',text:'Semua data absensi (tanpa gambar) sedang dihapus...',showConfirmButton:false,timer:1500});
-                    window.location.href="{{ url('/admin/absensi/delete-all?with_image=0') }}";
+                    postWithQuery('{{ url("/admin/absensi/delete-all") }}', {with_image: 0});
                 }
             });
         } else if(result.dismiss === Swal.DismissReason.cancel){

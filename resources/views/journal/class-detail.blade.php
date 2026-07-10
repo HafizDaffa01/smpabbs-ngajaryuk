@@ -563,14 +563,20 @@
                                             <a href="#" role="button" tabindex="0" class="kbm-link"
                                                 style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}"
                                                 onclick="addKeterangan(this.closest('td')); event.preventDefault();">
-                                                {!! $note
-                                                    ? $note->note
-                                                    : '<i data-feather="edit-2" style="width: 16px; height: 16px; display: inline; vertical-align: -2px;"></i> Klik untuk tambah keterangan' !!}
+                                                @if ($note)
+                                                    {!! nl2br(e($note->note)) !!}
+                                                @else
+                                                    <i data-feather="edit-2" style="width: 16px; height: 16px; display: inline; vertical-align: -2px;"></i> Klik untuk tambah keterangan
+                                                @endif
                                             </a>
                                         @else
                                             <div class="kbm-link disabled"
                                                 style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}; cursor: default; background: transparent; border: none; padding: 0;">
-                                                {!! $note ? $note->note : '-' !!}
+                                                @if ($note)
+                                                    {!! nl2br(e($note->note)) !!}
+                                                @else
+                                                    -
+                                                @endif
                                             </div>
                                         @endif
                                     </div>

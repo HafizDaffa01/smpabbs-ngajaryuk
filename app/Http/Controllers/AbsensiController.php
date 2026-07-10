@@ -33,41 +33,64 @@ class AbsensiController extends Controller
             'lokasi' => 'required|string',
             'foto'   => 'required|string',
             'alamat' => 'nullable|string',
+            'lat'    => 'nullable|numeric|between:-90,90',
+            'lon'    => 'nullable|numeric|between:-180,180',
         ]);
 
         $user = Auth::user();
 
-        // 2. Cegah Absensi Ganda pada Hari yang Sama
-        $sudahAbsen = Absensi::where(function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->orWhere('nama', $user->name);
-            })
+        // 1b. Server-side geofence validation
+        if ($request->filled('lat') && $request->filled('lon')) {
+            // SMP ABBS Surakarta approximate coordinates: -7.5564, 110.8347
+            $schoolLat = -7.5564;
+            $schoolLon = 110.8347;
+            $maxRadius = 1000; // meters
+
+            $distance = $this->haversineDistance($request->lat, $request->lon, $schoolLat, $schoolLon);
+            if ($distance > $maxRadius) {
+                return back()->with('error', 'Anda berada di luar radius sekolah. Presensi ditolak.');
+            }
+        }
+
+        // 2. Cegah Absensi Ganda pada Hari yang Sama (atomic check)
+        $alreadyCheckedIn = Absensi::where('user_id', $user->id)
             ->whereDate('waktu', now()->toDateString())
             ->first();
 
-        if ($sudahAbsen) {
-            $jamAbsen = Carbon::parse($sudahAbsen->waktu)->format('H:i');
+        if ($alreadyCheckedIn) {
+            $jamAbsen = Carbon::parse($alreadyCheckedIn->waktu)->format('H:i');
             return redirect()->route('error')->with('error', "Anda sudah presensi pada jam {$jamAbsen}");
         }
 
-        // 3. Proses File Base64 Menggunakan Facade Laravel
+        // 3. Proses File Base64
         $fotoName = null;
         if ($request->filled('foto')) {
             try {
-                // Menghapus base64 header
                 $fotoData = preg_replace('/^data:image\/\w+;base64,/', '', $request->foto);
                 $dFoto = base64_decode($fotoData);
                 
                 if ($dFoto !== false) {
-                    $fotoName = "uploads/" . filter_var($user->name, FILTER_SANITIZE_STRING) . "@" . now()->format('d-m-Y_H-i-s') . ".png";
+                    // Validate decoded photo size (max 5MB)
+                    if (strlen($dFoto) > 5 * 1024 * 1024) {
+                        return back()->with('error', 'Ukuran foto terlalu besar (maksimal 5MB).');
+                    }
+
+                    // Validate MIME type
+                    $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                    $mimeType = $finfo->buffer($dFoto);
+                    $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                    if (!in_array($mimeType, $allowedMimes)) {
+                        return back()->with('error', 'Format foto tidak valid. Hanya JPEG, PNG, GIF, WebP yang diizinkan.');
+                    }
+
+                    $safeName = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $user->name);
+                    $fotoName = "uploads/" . $safeName . "@" . now()->format('d-m-Y_H-i-s') . ".png";
                     $directory = public_path('uploads');
 
-                    // Pastikan folder uploads tersedia
                     if (!File::exists($directory)) {
                         File::makeDirectory($directory, 0755, true);
                     }
 
-                    // Gunakan FileFacade Laravel dibandingkan native file_put_contents
                     File::put(public_path($fotoName), $dFoto);
                 }
             } catch (\Exception $e) {
@@ -86,7 +109,7 @@ class AbsensiController extends Controller
             'foto'    => $fotoName,
         ]);
 
-        $apiKey = env('FONNTE_API_KEY');
+        $apiKey = config('fonnte.api_key');
 
         $dayMap = [
             'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu',
@@ -140,5 +163,25 @@ class AbsensiController extends Controller
         ]);
 
         return redirect()->route('success')->with('success', 'Presensi berhasil disimpan!');
+    }
+
+    /**
+     * Calculate distance between two coordinates using Haversine formula.
+     * Returns distance in meters.
+     */
+    private function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $earthRadius = 6371000; // meters
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) ** 2 +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLon / 2) ** 2;
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

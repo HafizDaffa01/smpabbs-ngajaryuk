@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use App\Models\Student;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Imports\TeacherImport;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -312,16 +313,18 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // Hapus absensi yang berhubungan dengan user ini
-        $absensis = Absensi::where('user_id', $user->id)->get();
-        foreach ($absensis as $absen) {
-            if ($absen->foto && File::exists(public_path($absen->foto))) {
-                File::delete(public_path($absen->foto));
+        DB::transaction(function () use ($user) {
+            // Hapus absensi yang berhubungan dengan user ini
+            $absensis = Absensi::where('user_id', $user->id)->get();
+            foreach ($absensis as $absen) {
+                if ($absen->foto && File::exists(public_path($absen->foto))) {
+                    File::delete(public_path($absen->foto));
+                }
+                $absen->delete();
             }
-            $absen->delete();
-        }
 
-        $user->delete();
+            $user->delete();
+        });
 
         return response()->json([
             'status' => 'success',
