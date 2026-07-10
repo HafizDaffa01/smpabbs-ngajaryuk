@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Absensi;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class SendWhatsappAlert extends Command
@@ -90,23 +91,52 @@ class SendWhatsappAlert extends Command
 
             $this->info("[" . ($index+1) . "/{$total}] Kirim ke {$phone}");
 
+            $payload = [
+                'target' => $phone,
+                'message' => $message,
+                'countryCode' => '62',
+            ];
+
+            $deviceId = config('fonnte.device_id');
+            if (!empty($deviceId)) {
+                $payload['device'] = $deviceId;
+            }
+
             try {
                 $response = Http::withHeaders([
                     'Authorization' => $apiKey,
-                ])->post('https://api.fonnte.com/send', [
-                    'target' => $phone,
-                    'message' => $message,
-                    'countryCode' => '62',
-                ]);
+                ])->timeout(10)->post(config('fonnte.api_url'), $payload);
+
+                $body = $response->json();
 
                 if ($response->successful()) {
-                    $this->info("[i] Berhasil");
+                    if (isset($body['status']) && $body['status'] === false) {
+                        $this->error("[!] Fonnte error: " . ($body['msg'] ?? json_encode($body)));
+                        Log::warning('Fonnte API error (reminder)', [
+                            'user_id' => $user->id,
+                            'phone' => $phone,
+                            'response' => $body,
+                        ]);
+                    } else {
+                        $this->info("[i] Berhasil");
+                    }
                 } else {
-                    $this->error("[!] Gagal");
+                    $this->error("[!] HTTP {$response->status()}: " . $response->body());
+                    Log::error('Fonnte HTTP error (reminder)', [
+                        'user_id' => $user->id,
+                        'phone' => $phone,
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                    ]);
                 }
 
             } catch (\Exception $e) {
                 $this->error("[!] Error: " . $e->getMessage());
+                Log::error('Fonnte exception (reminder)', [
+                    'user_id' => $user->id,
+                    'phone' => $phone,
+                    'error' => $e->getMessage(),
+                ]);
             }
 
             usleep(500000);

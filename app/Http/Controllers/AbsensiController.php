@@ -11,6 +11,8 @@ use App\Models\Teacher;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
+use Illuminate\Support\Facades\Log;
+
 class AbsensiController extends Controller
 {
     /**
@@ -121,46 +123,83 @@ class AbsensiController extends Controller
         $tglNow = now()->format('d-m-Y');
         $jamNow = now()->format('H:i');
 
-        $phone = preg_replace('/[^0-9]/', '', $user->phone_num);
+        $phone = preg_replace('/[^0-9]/', '', $user->phone_num ?? '');
         $phone = ltrim($phone, '0');
 
-        $absen = Absensi::where(function ($q) use ($user) {
-                $q->where('user_id', $user->id)
-                    ->orWhere('nama', $user->name);
-            })
-            ->whereDate('waktu', now()->toDateString())
-            ->first();
+        if (empty($phone)) {
+            Log::warning('Fonnte: phone_num kosong untuk user', ['user_id' => $user->id, 'name' => $user->name]);
+        } else {
+            $absen = Absensi::where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                        ->orWhere('nama', $user->name);
+                })
+                ->whereDate('waktu', now()->toDateString())
+                ->first();
 
-        $schedules = Schedule::where('day', $dayEn)
-            ->where('teacher', 'LIKE', '%' . $user->name . '%')
-            ->orderBy('period')
-            ->get();
+            $schedules = Schedule::where('day', $dayEn)
+                ->where('teacher', 'LIKE', '%' . $user->name . '%')
+                ->orderBy('period')
+                ->get();
 
-        $teachingList = $schedules->count() > 0 
-            ? $schedules->map(fn($s) => "- Jam {$s->period}: {$s->subject} ({$s->class_name})")->implode("\n")
-            : "(Tidak ada jadwal hari ini)";
+            $teachingList = $schedules->count() > 0 
+                ? $schedules->map(fn($s) => "- Jam {$s->period}: {$s->subject} ({$s->class_name})")->implode("\n")
+                : "(Tidak ada jadwal hari ini)";
 
 
-        $jamAbsen = Carbon::parse($absen->waktu)->format('H:i');
+            $jamAbsen = Carbon::parse($absen->waktu)->format('H:i');
 
-        $message = "[NgajarYuk]\n\n"
-            . "Halo *{$user->name}*, terima kasih sudah melakukan Presensi pada jam *{$jamAbsen}* ✅\n\n"
-            . "Berikut jadwal mengajar Anda hari ini (*{$dayId}*):\n\n"
-            . "{$teachingList}\n\n"
-            . "📌 Jangan lupa untuk mengisi jurnal harian setelah kegiatan mengajar.\n\n"
-            . "🔗 *Isi Jurnal:*\n"
-            . "gurusmpabbs.alabidin.sch.id/journal\n\n"
-            . "Tetap semangat mengajar! 💪\n"
-            . "Tanggal: {$tglNow}\n\n"
-            . "Waktu : *{$jamNow}*";
+            $message = "[NgajarYuk]\n\n"
+                . "Halo *{$user->name}*, terima kasih sudah melakukan Presensi pada jam *{$jamAbsen}* ✅\n\n"
+                . "Berikut jadwal mengajar Anda hari ini (*{$dayId}*):\n\n"
+                . "{$teachingList}\n\n"
+                . "📌 Jangan lupa untuk mengisi jurnal harian setelah kegiatan mengajar.\n\n"
+                . "🔗 *Isi Jurnal:*\n"
+                . "gurusmpabbs.alabidin.sch.id/journal\n\n"
+                . "Tetap semangat mengajar! 💪\n"
+                . "Tanggal: {$tglNow}\n\n"
+                . "Waktu : *{$jamNow}*";
 
-        Http::withHeaders([
-            'Authorization' => $apiKey,
-        ])->post('https://api.fonnte.com/send', [
-            'target' => $phone,
-            'message' => $message,
-            'countryCode' => '62',
-        ]);
+            $payload = [
+                'target' => $phone,
+                'message' => $message,
+                'countryCode' => '62',
+            ];
+
+            $deviceId = config('fonnte.device_id');
+            if (!empty($deviceId)) {
+                $payload['device'] = $deviceId;
+            }
+
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => $apiKey,
+                ])->timeout(10)->post(config('fonnte.api_url'), $payload);
+
+                if ($response->successful()) {
+                    $body = $response->json();
+                    if (isset($body['status']) && $body['status'] === false) {
+                        Log::warning('Fonnte API error', [
+                            'user_id' => $user->id,
+                            'phone' => $phone,
+                            'response' => $body,
+                        ]);
+                    }
+                } else {
+                    Log::error('Fonnte HTTP error', [
+                        'user_id' => $user->id,
+                        'phone' => $phone,
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Fonnte exception', [
+                    'user_id' => $user->id,
+                    'phone' => $phone,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
 
         return redirect()->route('success')->with('success', 'Presensi berhasil disimpan!');
     }

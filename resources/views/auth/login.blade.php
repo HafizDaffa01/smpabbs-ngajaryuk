@@ -146,6 +146,7 @@
             font-size: 1rem;
             color: #f1f5f9;
             font-weight: 500;
+            box-sizing: border-box;
         }
 
         .form-input:focus {
@@ -252,34 +253,86 @@
             font-weight: 500;
         }
 
-        /* ----- Responsive ----- */
+        /* ----- Mobile ----- */
         @media (max-width: 768px) {
             .login-box {
                 flex-direction: column;
-                max-width: 450px;
+                max-width: 100%;
                 min-height: auto;
+                border-radius: 16px;
+                margin: 0;
             }
 
             .login-hero {
-                padding: 40px 20px;
-            }
-
-            .login-form-area {
-                padding: 40px 30px;
-            }
-
-            .hero-title {
-                font-size: 1.5rem;
+                padding: 28px 20px;
             }
 
             .hero-logo-box {
-                width: 80px;
-                height: 80px;
-                margin-bottom: 1.5rem;
+                width: 72px;
+                height: 72px;
+                border-radius: 18px;
+                margin-bottom: 1rem;
             }
 
             .hero-logo-box img {
-                width: 55px;
+                width: 48px;
+            }
+
+            .hero-title {
+                font-size: 1.35rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .hero-desc {
+                font-size: 0.85rem;
+            }
+
+            .login-form-area {
+                padding: 24px 20px;
+            }
+
+            .form-title {
+                font-size: 1.35rem;
+            }
+
+            .form-subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.15rem;
+            }
+
+            .form-input {
+                padding: 0.8rem 1rem;
+                padding-left: 2.75rem;
+                font-size: 16px; /* prevent iOS zoom */
+            }
+
+            .form-extras {
+                margin-bottom: 1.25rem;
+            }
+
+            .btn-submit {
+                padding: 0.9rem;
+                font-size: 1rem;
+                border-radius: 12px;
+            }
+
+            .login-foot {
+                margin-top: 1.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .login-form-area {
+                padding: 20px 16px;
+            }
+
+            .hero-title {
+                font-size: 1.2rem;
             }
         }
     </style>
