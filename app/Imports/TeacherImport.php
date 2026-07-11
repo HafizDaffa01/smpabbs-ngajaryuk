@@ -6,12 +6,15 @@ use App\Models\Teacher;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterImport;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class TeacherImport implements ToCollection, WithHeadingRow
+class TeacherImport implements ToCollection, WithHeadingRow, WithEvents
 {
+    protected array $importedEmails = [];
     protected array $mapelMapping = [
         // Agama
         'pai' => 'IFE',
@@ -250,69 +253,91 @@ class TeacherImport implements ToCollection, WithHeadingRow
 
         Log::info("Teacher Import format detected: " . ($formatType ?? 'Unknown/Fallback'));
 
-        DB::transaction(function () use ($rows, $formatType) {
-            foreach ($rows as $row) {
-                $nama = $row['nama'] ?? $row['name'] ?? null;
-                $email = $row['email'] ?? null;
-                $password = $row['password'] ?? null;
-                $phone = $row['hp'] ?? $row['telepon'] ?? $row['wa'] ?? $row['whatsapp'] ?? $row['phone'] ?? $row['num'] ?? $row['number'] ?? null;
+        foreach ($rows as $row) {
+            $nama = $row['nama'] ?? $row['name'] ?? null;
+            $email = $row['email'] ?? null;
+            $password = $row['password'] ?? null;
+            $phone = $row['hp'] ?? $row['telepon'] ?? $row['wa'] ?? $row['whatsapp'] ?? $row['phone'] ?? $row['num'] ?? $row['number'] ?? null;
 
-                if (!$nama) {
-                    continue;
-                }
-
-                if (!$email || !$password) {
-                    Log::warning('Row di-skip karena tidak ada email/password untuk ' . $nama);
-                    continue;
-                }
-
-                $user = Teacher::firstOrNew(['email' => $email]);
-                $user->name = $nama;
-                $user->password = Hash::make($password);
-                $user->is_admin = 0;
-                $user->phone_num = $phone;
-
-                $rawItems = [];
-
-                if ($formatType === 'B' || $formatType === null) {
-                    // Fallback to Format B logic
-                    foreach ($row as $key => $val) {
-                        if ($val && preg_match('/^[789][a-z]?$/i', (string)$key)) {
-                            $kelas = strtoupper((string)$key);
-                            $items = preg_split('/\s*(?:&|\+|dan)\s*/i', $val);
-                            foreach ($items as $m) {
-                                $mapped = $this->mapSubject($m);
-                                if ($mapped && trim($mapped) !== '' && trim($mapped) !== '-') {
-                                    $rawItems[] = [
-                                        'kelas' => $kelas,
-                                        'mapel' => $mapped
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                } elseif ($formatType === 'A') {
-                    foreach ($row as $key => $val) {
-                        if (in_array(strtolower($key), ['no', 'nama', 'name', 'email', 'password', 'number', 'num', 'hp', 'telepon', 'wa', 'whatsapp', 'phone'])) continue;
-                        
-                        if (is_scalar($val)) {
-                            $strVal = (string)$val;
-                            if (trim($strVal) !== '' && trim($strVal) !== '-') {
-                                $mapped = $this->mapSubject(str_replace('_', ' ', $key));
-                                if ($mapped && trim($mapped) !== '') {
-                                    $rawItems[] = [
-                                        'mapel' => $mapped,
-                                        'kelas' => trim($strVal)
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                $user->mapel = $this->flattenClasses($rawItems);
-                $user->save();
+            if (!$nama) {
+                continue;
             }
-        });
+
+            if (!$email || !$password) {
+                Log::warning('Row di-skip karena tidak ada email/password untuk ' . $nama);
+                continue;
+            }
+
+            $this->importedEmails[] = $email;
+
+            $user = Teacher::firstOrNew(['email' => $email]);
+
+            $user->name = $nama;
+            $user->password = Hash::make($password);
+            $user->is_admin = 0;
+            $user->phone_num = $phone;
+
+            $rawItems = [];
+
+            if ($formatType === 'B' || $formatType === null) {
+                foreach ($row as $key => $val) {
+                    if ($val && preg_match('/^[789][a-z]?$/i', (string)$key)) {
+                        $kelas = strtoupper((string)$key);
+                        $items = preg_split('/\s*(?:&|\+|dan)\s*/i', $val);
+                        foreach ($items as $m) {
+                            $mapped = $this->mapSubject($m);
+                            if ($mapped && trim($mapped) !== '' && trim($mapped) !== '-') {
+                                $rawItems[] = [
+                                    'kelas' => $kelas,
+                                    'mapel' => $mapped
+                                ];
+                            }
+                        }
+                    }
+                }
+            } elseif ($formatType === 'A') {
+                foreach ($row as $key => $val) {
+                    if (in_array(strtolower($key), ['no', 'nama', 'name', 'email', 'password', 'number', 'num', 'hp', 'telepon', 'wa', 'whatsapp', 'phone'])) continue;
+                    
+                    if (is_scalar($val)) {
+                        $strVal = (string)$val;
+                        if (trim($strVal) !== '' && trim($strVal) !== '-') {
+                            $mapped = $this->mapSubject(str_replace('_', ' ', $key));
+                            if ($mapped && trim($mapped) !== '') {
+                                $rawItems[] = [
+                                    'mapel' => $mapped,
+                                    'kelas' => trim($strVal)
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+            $user->mapel = $this->flattenClasses($rawItems);
+            $user->save();
+        }
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterImport::class => function () {
+                $this->afterImport();
+            },
+        ];
+    }
+
+    public function afterImport()
+    {
+        if (empty($this->importedEmails)) {
+            return;
+        }
+
+        $deleted = Teacher::where('is_admin', 0)
+            ->whereNotIn('email', $this->importedEmails)
+            ->delete();
+
+        Log::info("Teacher Import: deleted {$deleted} teachers not in Excel");
     }
 }

@@ -412,7 +412,14 @@
                                 <input type="file" id="excelInputTeacher" name="excel" accept=".xlsx, .xls"
                                     required class="form-control form-control-sm">
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Import Excel Guru</button>
+                            <div class="d-flex gap-2 mb-3">
+                                <button type="button" id="lihatPrevTeacher" class="btn btn-secondary grow">Lihat Preview</button>
+                                <button type="submit" class="btn btn-primary grow">Import Excel</button>
+                            </div>
+
+                            <div id="tableContainerTeacher" class="mt-2">
+                                <p class="text-main small italic opacity-50 m-0">Preview guru akan muncul di sini...</p>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -811,6 +818,49 @@
 
             const excelFormTeacher = document.getElementById('excelFormTeacher');
             if (excelFormTeacher) {
+                const excelInputTeacher = document.getElementById('excelInputTeacher');
+                const lihatPrevTeacherBtn = document.getElementById('lihatPrevTeacher');
+                const tableContainerTeacher = document.getElementById('tableContainerTeacher');
+                let previewDataTeacher = [];
+                let previewVisibleTeacher = false;
+
+                excelInputTeacher.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file || typeof XLSX === 'undefined') return;
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        const workbook = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+                        previewDataTeacher = workbook.SheetNames.map(name => ({
+                            sheet: name,
+                            data: XLSX.utils.sheet_to_json(workbook.Sheets[name])
+                        }));
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+
+                lihatPrevTeacherBtn.addEventListener('click', () => {
+                    previewVisibleTeacher = !previewVisibleTeacher;
+                    lihatPrevTeacherBtn.textContent = previewVisibleTeacher ? 'Sembunyikan Preview' : 'Lihat Preview';
+                    if (!previewVisibleTeacher) {
+                        tableContainerTeacher.innerHTML = '';
+                        return;
+                    }
+                    let html = '';
+                    previewDataTeacher.forEach(sheet => {
+                        if (!sheet.data.length) return;
+                        html += `<h5 class="mt-3 text-main">${sheet.sheet}</h5><table class="ts-table"><thead><tr>`;
+                        Object.keys(sheet.data[0]).forEach(k => html += `<th>${k}</th>`);
+                        html += `</tr></thead><tbody>`;
+                        sheet.data.forEach(row => {
+                            html += '<tr>';
+                            Object.values(row).forEach(v => html += `<td>${v||''}</td>`);
+                            html += '</tr>';
+                        });
+                        html += '</tbody></table>';
+                    });
+                    tableContainerTeacher.innerHTML = html || '<p class="text-muted small">File kosong</p>';
+                });
+
                 excelFormTeacher.addEventListener('submit', function(e) {
                     e.preventDefault();
                     Swal.fire({
@@ -831,6 +881,11 @@
                                 icon: 'success',
                                 title: 'Import berhasil'
                             });
+                            excelInputTeacher.value = '';
+                            tableContainerTeacher.innerHTML = '<p class="text-main small italic opacity-50 m-0">Preview guru akan muncul di sini...</p>';
+                            previewDataTeacher = [];
+                            previewVisibleTeacher = false;
+                            lihatPrevTeacherBtn.textContent = 'Lihat Preview';
                             loadTable();
                             setTimeout(() => location.reload(), 700);
                         } else Swal.fire("Error", d.error, "error");

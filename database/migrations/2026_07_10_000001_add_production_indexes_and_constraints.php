@@ -18,9 +18,13 @@ return new class extends Migration
             $table->index('nama');
         });
 
-        // Unique constraint to prevent duplicate attendance per user per day
-        // Uses a partial index approach via raw SQL for SQLite compatibility
-        DB::statement('CREATE UNIQUE INDEX IF NOT EXISTS absensis_user_date_unique ON absensis (user_id, date(waktu)) WHERE user_id IS NOT NULL');
+        Schema::table('absensis', function (Blueprint $table) {
+            $table->date('waktu_date')->virtualAs('DATE(waktu)')->nullable();
+        });
+
+        Schema::table('absensis', function (Blueprint $table) {
+            $table->unique(['user_id', 'waktu_date']);
+        });
 
         Schema::table('attendances', function (Blueprint $table) {
             // Composite index for the most common query pattern
@@ -42,7 +46,8 @@ return new class extends Migration
             $table->dropIndex('absensis_nama_index');
         });
 
-        DB::statement('DROP INDEX IF EXISTS absensis_user_date_unique');
+            $table->dropIndex(['user_id', 'waktu_date']);
+            $table->dropColumn('waktu_date');
 
         Schema::table('attendances', function (Blueprint $table) {
             $table->dropIndex(['student_id', 'month', 'year']);
