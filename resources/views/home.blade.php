@@ -45,7 +45,7 @@
     }
 </style>
 
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+<div class="container" style="min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px;">
     <div class="row w-100 justify-content-center">
         <div class="col-md-7 col-lg-6">
             <div class="home-card p-5 text-center animate__animated animate__zoomIn">

@@ -94,11 +94,10 @@
 .attendance-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     background: var(--bg-body);
     padding: 15px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    width: 100%;
 }
 
 .attendance-card {
@@ -410,7 +409,7 @@
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 480px) {
     .attendance-container {
-        padding: 10px;
+        padding: 5px;
     }
 
     .attendance-card {
@@ -418,66 +417,103 @@
     }
 
     .attendance-header {
-        padding: 20px 15px;
+        padding: 15px 10px;
     }
 
     .clock-text {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
 
     .date-text {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    .greeting-section {
+        padding: 12px 15px;
     }
 
     .greeting-section h4 {
-        font-size: 1rem;
+        font-size: 0.9rem;
+    }
+
+    #absensiForm {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .form-section {
+        gap: 6px;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
     }
 
     .map-container {
-        height: 180px;
+        height: 140px;
     }
 
     .camera-feed,
     .photo-preview {
-        height: 200px;
+        height: 160px;
     }
 
     .buttons-container {
         grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 5px 0;
     }
 
     .btn {
         width: 100%;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .btn-lg {
+        padding: 12px 16px;
+        font-size: 0.95rem;
     }
 
     #notification-container {
-        top: 10px;
-        right: 10px;
-        left: 10px;
+        top: 5px;
+        right: 5px;
+        left: 5px;
     }
 
     .notification {
         min-width: auto;
         width: 100%;
+        padding: 10px 14px;
+        font-size: 0.85rem;
     }
 }
 
 @media (max-width: 360px) {
     .clock-text {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
 
     .greeting-section h4 {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
     }
 
     .form-label {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+    }
+
+    .map-container {
+        height: 120px;
+    }
+
+    .camera-feed,
+    .photo-preview {
+        height: 140px;
     }
 
     .btn {
-        padding: 12px 16px;
-        font-size: 0.9rem;
+        padding: 8px 12px;
+        font-size: 0.85rem;
     }
 }
 </style>

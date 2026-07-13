@@ -335,6 +335,16 @@
                 font-size: 1.2rem;
             }
         }
+
+        .build-version {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+            margin-top: 1rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+            font-family: monospace;
+        }
     </style>
 
     <div class="login-box">
@@ -402,6 +412,7 @@
 
             <div class="login-foot">
                 <p>Butuh bantuan? Silakan hubungi admin IT.</p>
+                <p class="build-version">Build Version: {{ env('BVer', '2.01') }}</p>
             </div>
         </div>
     </div>

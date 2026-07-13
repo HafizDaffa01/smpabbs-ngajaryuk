@@ -77,6 +77,13 @@
             color: var(--text-main);
         }
 
+        #app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            flex: 1;
+        }
+
         .navbar {
             background-color: var(--bg-navbar) !important;
             padding: 0.75rem 0;
@@ -187,17 +194,13 @@
 
         /* Mobile Bottom Nav */
         .mobile-bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            display: flex;
+            align-items: center;
             height: 70px;
             background: var(--bg-navbar);
             box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
             z-index: 1050;
             border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
         }
 
         .mobile-nav-link {
@@ -256,18 +259,52 @@
         }
 
         @media (max-width: 767.98px) {
-            body.has-bottom-nav {
-                padding-bottom: 80px;
-            }
-
-            body.has-bottom-nav .navbar-toggler {
-                display: none;
-                /* Hide toggle only for users with bottom nav */
-            }
-
             .navbar-brand {
                 margin-left: auto;
                 margin-right: auto;
+            }
+        }
+
+        /* User layout (non-admin) - flex column with fixed bottom nav */
+        .user-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .user-layout #app {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .user-layout #main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 70px; /* space for fixed bottom nav */
+        }
+
+        .user-layout .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--bg-navbar);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1050;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 767.98px) {
+            .user-layout .navbar-toggler {
+                display: none;
             }
         }
 
@@ -394,7 +431,7 @@
 
 </head>
 
-<body class="@auth @if (!Auth::user()->is_admin) has-bottom-nav @endif @endauth">
+<body class="@auth @if (!Auth::user()->is_admin) user-layout @endif @endauth">
     @php
         // ====== LOGIKA PENENTUAN PERIODE OTOMATIS ======
         $months = [
@@ -517,12 +554,6 @@
                                         <i class="fas fa-book me-1"></i> Jurnal
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {{ Request::is('prevSmes*') ? 'active' : '' }}"
-                                        href="{{ url('/prevSmes?usr=' . Auth::user()->id) }}">
-                                        <i class="fas fa-history me-1"></i> Rekap
-                                    </a>
-                                </li>
                             @endif
                         @endauth
 
@@ -615,115 +646,31 @@
             @csrf
         </form>
 
-        <main class="py-5" style="background-color: var(--bg-body); min-height: 100vh;">
+        <main id="main-content" class="flex-fill" style="background-color: var(--bg-body);">
             @yield('content')
         </main>
+
+        @auth
+            @if (!Auth::user()->is_admin)
+                <div class="mobile-bottom-nav d-md-none">
+                    <a href="{{ url('/absensi') }}" class="mobile-nav-link {{ Request::is('absensi*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Absensi</span>
+                    </a>
+                    <a href="{{ url('/journal?usr=' . Auth::user()->id) }}"
+                        class="mobile-nav-link {{ Request::is('journal*') ? 'active' : '' }}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Jurnal</span>
+                    </a>
+                    <a href="{{ route('profile.edit') }}"
+                        class="mobile-nav-link {{ Request::is('profile*') ? 'active' : '' }}">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profil</span>
+                    </a>
+                </div>
+            @endif
+        @endauth
     </div>
-
-    @auth
-    <script>
-        function openProfileModal() {
-            Swal.fire({
-                title: 'Edit Profil Saya',
-                html: `
-                    <div class="text-start py-2">
-                        <label class="form-label small fw-bold">NAMA:</label>
-                        <input type="text" id="profName" class="swal2-input m-0 w-100" value="{{ Auth::user()->name }}">
-                    </div>
-                    <div class="text-start py-2">
-                        <label class="form-label small fw-bold">NOMOR HP:</label>
-                        <input type="text" id="profPhone" class="swal2-input m-0 w-100" value="{{ Auth::user()->phone_num }}" placeholder="08xxxxxxxx">
-                    </div>
-                    <div class="text-start py-2">
-                        <label class="form-label small fw-bold">PASSWORD BARU (KOSONGKAN JIKA TIDAK DIUBAH):</label>
-                        <input type="password" id="profPassword" class="swal2-input m-0 w-100" placeholder="Minimal 6 karakter">
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                focusConfirm: false,
-                preConfirm: () => {
-                    const name = document.getElementById('profName').value;
-                    const phone_num = document.getElementById('profPhone').value;
-                    const password = document.getElementById('profPassword').value;
-
-                    if (!name) {
-                        Swal.showValidationMessage('Nama wajib diisi');
-                        return false;
-                    }
-
-                    return { name, phone_num, password };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Menyimpan...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-
-                    fetch("{{ route('profile.update') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(result.value)
-                    })
-                    .then(r => r.json())
-                    .then(d => {
-                        if (d.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: d.message,
-                                timer: 1500,
-                                showConfirmButton: false
-                            }).then(() => location.reload());
-                        } else {
-                            Swal.fire('Gagal', d.message || 'Terjadi kesalahan', 'error');
-                        }
-                    })
-                    .catch(e => {
-                        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
-                    });
-                }
-            });
-        }
-    </script>
-    @endauth
-    @auth
-        @if (!Auth::user()->is_admin)
-            <div class="mobile-bottom-nav d-md-none">
-                <a href="{{ url('/absensi') }}" class="mobile-nav-link {{ Request::is('absensi*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Absensi</span>
-                </a>
-                <a href="{{ url('/journal?usr=' . Auth::user()->id) }}"
-                    class="mobile-nav-link {{ Request::is('journal*') ? 'active' : '' }}">
-                    <i class="fas fa-book-open"></i>
-                    <span>Jurnal</span>
-                </a>
-                <a href="{{ url('/prevSmes?usr=' . Auth::user()->id) }}"
-                    class="mobile-nav-link {{ Request::is('prevSmes*') ? 'active' : '' }}">
-                    <i class="fas fa-history"></i>
-                    <span>Rekap</span>
-                </a>
-                <a href="{{ route('profile.edit') }}"
-                    class="mobile-nav-link {{ Request::is('profile*') ? 'active' : '' }}">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Profil</span>
-                </a>
-                <a href="{{ route('logout') }}" class="mobile-nav-link"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Keluar</span>
-                </a>
-            </div>
-        @endif
-    @endauth
 
     @stack('scripts')
     <script>

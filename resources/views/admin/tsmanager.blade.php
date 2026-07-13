@@ -366,7 +366,7 @@
                                 <label class="form-label small fw-bold text-uppercase">Password:</label>
                                 <div class="pw-wrapper">
                                     <input type="password" name="password" id="inputPw" class="form-control" required
-                                        placeholder="Password">
+                                        placeholder="Password" minlength="6">
                                     <i data-feather="eye" style="color: #fff;" id="pwEye" onclick="showPw()"></i>
                                 </div>
                             </div>
@@ -799,7 +799,8 @@
                     fetch('/admin/add-teacher', {
                         method: 'POST',
                         headers: {
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json"
                         },
                         body: new FormData(this)
                     }).then(r => r.json()).then(d => {
@@ -811,7 +812,13 @@
                             });
                             loadTable();
                             this.reset();
-                        } else Swal.fire("Error", d.error, "error");
+                        } else if (d.errors) {
+                            // Laravel validation errors
+                            const firstError = Object.values(d.errors)[0][0];
+                            Swal.fire("Error", firstError, "error");
+                        } else {
+                            Swal.fire("Error", d.message || 'Gagal menambahkan guru', "error");
+                        }
                     });
                 });
             }

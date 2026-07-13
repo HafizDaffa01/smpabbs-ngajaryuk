@@ -67,7 +67,7 @@
         }
     </style>
 
-    <div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="container" style="min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px;">
         <form action="{{ route('journal.show') }}" method="GET" class="class-selector-card" id="classSelection">
             <input type="hidden" name="usr" value="{{ $usr }}">
 

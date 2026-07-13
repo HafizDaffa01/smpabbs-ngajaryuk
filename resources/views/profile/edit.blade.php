@@ -94,6 +94,12 @@
                             <a href="{{ url('/') }}" class="btn btn-dark bg-soft-dark border-0 rounded-xl py-2 text-muted fw-bold transition-all">
                                 <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
                             </a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-lg rounded-xl py-3 fw-bold transition-all">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Keluar
+                                </button>
+                            </form>
                         </div>
                     </form>
                 </div>

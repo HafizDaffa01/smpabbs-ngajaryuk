@@ -42,7 +42,7 @@ class TeacherController extends Controller
         // 1. Validasi Request
         $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:teachers',
+            'email'    => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'kelas'    => 'nullable|array',
             'mapel'    => 'nullable|array',
