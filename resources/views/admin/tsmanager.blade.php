@@ -943,7 +943,7 @@
                     </div>
                     <div class="text-left py-2">
                         <label class="form-label small fw-bold">PASSWORD BARU (KOSONGKAN JIKA TIDAK DIUBAH):</label>
-                        <input type="password" id="editPassword" class="swal2-input m-0 w-100" placeholder="Minimal 6 karakter">
+                        <input type="password" id="editPassword" class="swal2-input m-0 w-100" placeholder="Kosongkan jika tidak diubah">
                     </div>
                 `,
                 showCancelButton: true,
@@ -953,7 +953,7 @@
                 preConfirm: () => {
                     const name = document.getElementById('editName').value;
                     const email = document.getElementById('editEmail').value;
-                    const phone = document.getElementById('editPhone').value;
+                    const phone_num = document.getElementById('editPhone').value;
                     const password = document.getElementById('editPassword').value;
 
                     if (!name || !email) {
@@ -961,7 +961,7 @@
                         return false;
                     }
 
-                    return { name, email, phone, password };
+                    return { name, email, phone_num, password };
                 }
             }).then((result) => {
                 if (result.isConfirmed) {

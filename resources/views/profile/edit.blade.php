@@ -29,6 +29,7 @@
                         </div>
                     @endif
 
+                    <!-- Form Update Profil (Nama, Email, Telepon) -->
                     <form action="{{ route('profile.update_new') }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -83,7 +84,7 @@
                             @error('phone_num')
                                 <div class="text-danger small mt-1 ms-1 fw-medium">{{ $message }}</div>
                             @else
-                                <div class="form-text ms-1 text-muted small opacity-50">Pastikan nomor ini aktif untuk menerima alert.</div>
+                                <div class="form-text ms-1 text-muted small opacity-50">Nomor saat ini: <strong class="text-white">{{ $user->phone_num ?? 'Belum diisi' }}</strong> | Pastikan nomor ini aktif untuk menerima alert.</div>
                             @enderror
                         </div>
 
@@ -94,14 +95,104 @@
                             <a href="{{ url('/') }}" class="btn btn-dark bg-soft-dark border-0 rounded-xl py-2 text-muted fw-bold transition-all">
                                 <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
                             </a>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-danger btn-lg rounded-xl py-3 fw-bold transition-all">
-                                    <i class="fas fa-sign-out-alt me-2"></i> Keluar
-                                </button>
-                            </form>
                         </div>
                     </form>
+
+                    <!-- Divider -->
+                    <hr class="my-5 border-secondary opacity-25">
+
+                    <!-- Form Ganti Password -->
+                    <form action="{{ route('profile.password.update') }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <h5 class="mb-4 fw-bold text-white d-flex align-items-center">
+                            <i class="fas fa-lock me-2 text-warning"></i> Ubah Password
+                        </h5>
+
+                        <!-- Password Saat Ini -->
+                        <div class="mb-4">
+                            <label for="current_password" class="form-label ms-1 fw-bold small text-uppercase tracking-wider text-primary opacity-75">Password Saat Ini</label>
+                            <div class="custom-input-group @error('current_password') is-invalid-group @enderror">
+                                <div class="icon-box">
+                                    <i class="fas fa-lock text-warning"></i>
+                                </div>
+                                <input type="password" name="current_password" id="current_password" 
+                                       class="custom-form-control @error('current_password') is-invalid @enderror" 
+                                       placeholder="Masukkan password saat ini" required autocomplete="current-password">
+                                @error('current_password')
+                                    <div class="status-box text-danger me-3">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                @enderror
+                            </div>
+                            @error('current_password')
+                                <div class="text-danger small mt-1 ms-1 fw-medium">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Password Baru -->
+                        <div class="mb-4">
+                            <label for="password" class="form-label ms-1 fw-bold small text-uppercase tracking-wider text-primary opacity-75">Password Baru</label>
+                            <div class="custom-input-group @error('password') is-invalid-group @enderror">
+                                <div class="icon-box">
+                                    <i class="fas fa-key text-info"></i>
+                                </div>
+                                <input type="password" name="password" id="password" 
+                                       class="custom-form-control @error('password') is-invalid @enderror" 
+                                       placeholder="Minimal 8 karakter" required autocomplete="new-password">
+                                @error('password')
+                                    <div class="status-box text-danger me-3">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                @enderror
+                            </div>
+                            @error('password')
+                                <div class="text-danger small mt-1 ms-1 fw-medium">{{ $message }}</div>
+                            @else
+                                <div class="form-text ms-1 text-muted small opacity-50">Minimal 8 karakter, kombinasi huruf, angka, dan simbol.</div>
+                            @enderror
+                        </div>
+
+                        <!-- Konfirmasi Password Baru -->
+                        <div class="mb-5">
+                            <label for="password_confirmation" class="form-label ms-1 fw-bold small text-uppercase tracking-wider text-primary opacity-75">Konfirmasi Password Baru</label>
+                            <div class="custom-input-group @error('password_confirmation') is-invalid-group @enderror">
+                                <div class="icon-box">
+                                    <i class="fas fa-key text-info"></i>
+                                </div>
+                                <input type="password" name="password_confirmation" id="password_confirmation" 
+                                       class="custom-form-control @error('password_confirmation') is-invalid @enderror" 
+                                       placeholder="Ulangi password baru" required autocomplete="new-password">
+                                @error('password_confirmation')
+                                    <div class="status-box text-danger me-3">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                @enderror
+                            </div>
+                            @error('password_confirmation')
+                                <div class="text-danger small mt-1 ms-1 fw-medium">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg rounded-xl py-3 fw-bold shadow-lg transition-all hover-lift">
+                                <i class="fas fa-key me-2"></i> Ubah Password
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="d-grid gap-3 mt-4">
+                        <a href="{{ url('/') }}" class="btn btn-dark bg-soft-dark border-0 rounded-xl py-2 text-muted fw-bold transition-all">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
+                        </a>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn-lg rounded-xl py-3 fw-bold transition-all">
+                                <i class="fas fa-sign-out-alt me-2"></i> Keluar
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,7 +240,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        /* Hapus border di sisi kanan icon-box untuk menghindari garis putih */
         border-right: none !important;
     }
 
@@ -201,7 +291,6 @@
         background-color: rgba(30, 41, 59, 0.5);
     }
 
-    /* Hilangkan outline default kalau ada */
     .custom-input-group span, .custom-input-group input {
         border: none !important;
         outline: none !important;

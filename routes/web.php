@@ -126,6 +126,7 @@ Route::middleware(['auth'])->group(function () {
     // Profile Update (New Page)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update_new');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
     // Profile Update (Legacy API for Modal)
     Route::post('/profile/update', [TeacherController::class, 'updateProfile'])->name('profile.update');

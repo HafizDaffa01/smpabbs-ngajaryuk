@@ -15,7 +15,7 @@ jurnal-kelas/
 │   ├── Models/               # 7 Eloquent models
 │   └── Providers/            # AppServiceProvider
 ├── bootstrap/                # App bootstrap, providers, cache
-├── config/                   # 14 config files (includes custom guru.php)
+├── config/                   # 15 config files (includes custom guru.php, abbs.php)
 ├── database/
 │   ├── factories/            # UserFactory
 │   ├── migrations/           # 15 migrations

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
@@ -18,7 +19,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user profile.
+     * Update the user profile (phone number).
      */
     public function update(Request $request)
     {
@@ -32,5 +33,23 @@ class ProfileController extends Controller
         $user->save();
 
         return back()->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    /**
+     * Update the user password.
+     */
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password berhasil diubah!');
     }
 }

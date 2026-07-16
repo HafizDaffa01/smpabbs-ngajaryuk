@@ -97,6 +97,62 @@
             backdrop-filter: blur(10px);
         }
 
+        /* ===== FILTER SECTION (Desktop first) ===== */
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .filter-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .filter-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        /* ===== MOBILE: Filter section stacked ===== */
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .filter-nav {
+                flex-direction: column;
+            }
+
+            .filter-btn {
+                flex: 1 1 100%;
+                min-width: 100%;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+                margin-left: 0;
+            }
+
+            .filter-actions .btn {
+                width: 100%;
+            }
+        }
+
         .input-group-text {
             background: rgba(255, 255, 255, 0.03) !important;
             border-color: var(--border-color) !important;
@@ -115,12 +171,115 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
         }
 
-        /* Update Teacher/Subject Table */
+        /* ===== COLLAPSIBLE SECTIONS (Mobile-First) ===== */
+        .collapsible-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .collapsible-header:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .collapsible-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .collapsible-title i {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .collapsible-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary-color);
+        }
+
+        .collapsible-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .collapsible-toggle:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .collapsible-toggle i {
+            font-size: 1rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .collapsible-section.collapsed .collapsible-toggle i {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            max-height: 5000px;
+            opacity: 1;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, padding 0.3s ease;
+        }
+
+        .collapsible-section.collapsed .collapsible-content {
+            max-height: 0;
+            opacity: 0;
+            padding: 0 !important;
+        }
+
+        .collapsible-body {
+            padding: 1.25rem;
+        }
+
+        /* Section specific colors */
+        .section-teachers .collapsible-title i { color: var(--info-color); }
+        .section-teachers .collapsible-badge { background: rgba(14, 165, 233, 0.2); color: var(--info-color); }
+        
+        .section-attendance .collapsible-title i { color: var(--success-color); }
+        .section-attendance .collapsible-badge { background: rgba(16, 185, 129, 0.2); color: var(--success-color); }
+        
+        .section-rekap .collapsible-title i { color: var(--warning-color); }
+        .section-rekap .collapsible-badge { background: rgba(245, 158, 11, 0.2); color: var(--warning-color); }
+
+        /* ===== Teacher/Subject Table ===== */
         .teacher-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-bottom: 2.5rem;
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
@@ -129,7 +288,7 @@
 
         .teacher-table th {
             background: rgba(255, 255, 255, 0.03);
-            padding: 1.25rem 1rem;
+            padding: 1rem 1rem;
             text-align: left;
             font-weight: 800;
             color: var(--text-muted);
@@ -140,27 +299,44 @@
         }
 
         .teacher-table td {
-            padding: 1.5rem 1rem;
+            padding: 1.25rem 1rem;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-main);
             vertical-align: middle;
             transition: background 0.2s ease;
         }
 
+        .teacher-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
         .teacher-table tbody tr:hover td {
             background: rgba(255, 255, 255, 0.02);
+        }
+
+        .teacher-subject {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .teacher-name {
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
 
         .kbm-link {
             text-decoration: none !important;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             padding: 8px 14px;
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid transparent;
             display: inline-block;
             transition: all 0.2s ease;
+            max-width: 100%;
+            word-break: break-word;
         }
 
         .kbm-link:hover {
@@ -169,12 +345,19 @@
             color: var(--primary-color) !important;
         }
 
-        /* Attendance Table Refinements - Non-Scrollable */
+        .kbm-link.disabled {
+            cursor: default;
+            color: var(--text-muted) !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        /* ===== Attendance Table ===== */
         .table-wrapper {
             border-radius: 12px;
             border: 1px solid var(--border-color);
             overflow: auto;
-            /* Enable scroll if needed */
             background: var(--bg-card);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -185,7 +368,6 @@
             color: var(--text-main) !important;
             margin-bottom: 0;
             table-layout: fixed;
-            /* Fit all columns */
             width: 100%;
         }
 
@@ -198,6 +380,9 @@
             font-size: 0.65rem;
             text-align: center;
             text-transform: uppercase;
+            position: sticky;
+            top: 0;
+            z-index: 20;
         }
 
         .table.table-bordered td {
@@ -214,16 +399,19 @@
         /* Column Widths */
         .col-no {
             width: 35px;
+            min-width: 35px;
         }
 
         .col-nama {
             width: 160px;
+            min-width: 140px;
             text-align: left !important;
             padding-left: 8px !important;
         }
 
         .col-status-sum {
             width: 30px;
+            min-width: 30px;
             font-weight: 800;
         }
 
@@ -268,6 +456,7 @@
             font-size: 0.95rem;
             color: #d1fae5;
             backdrop-filter: blur(5px);
+            border-radius: 0 12px 12px 0;
         }
 
         #rekapKeterangan strong {
@@ -329,107 +518,430 @@
             background: #0ea5e9 !important;
         }
 
+        /* ===== EXPAND/COLLAPSE ALL BUTTONS ===== */
+        .section-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .section-controls .btn {
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+        }
+
+        /* ===== RESPONSIVE: Tablet (<= 1024px) ===== */
+        @media (max-width: 1024px) {
+            #journalContainer {
+                padding: 1.5rem;
+                margin: 1rem;
+                border-radius: 12px;
+            }
+
+            .filter-section {
+                gap: 1rem;
+            }
+        }
+
+        /* ===== RESPONSIVE: Mobile (<= 768px) ===== */
         @media (max-width: 768px) {
             #journalContainer {
-                padding: 1.25rem;
+                padding: 1rem;
                 margin: 0.5rem;
                 border-radius: 8px;
+            }
+
+            /* Branding Header */
+            .text-center.mb-5 h1 {
+                font-size: 1.5rem !important;
+                letter-spacing: 1px !important;
+            }
+            .text-center.mb-5 h2 {
+                font-size: 1rem !important;
             }
 
             .page-header {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 1.25rem;
+                gap: 1rem;
                 text-align: center;
+                padding-bottom: 1rem;
             }
 
             .page-header h3 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 line-height: 1.4;
+            }
+
+            .page-header .back-link {
+                justify-content: center;
             }
 
             .filter-section {
                 flex-direction: column;
                 align-items: stretch;
                 padding: 1rem;
-                gap: 1rem;
+                gap: 0.75rem;
             }
 
-            .filter-section>* {
+            .filter-section > * {
                 max-width: 100% !important;
                 width: 100% !important;
+            }
+
+            .filter-section .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filter-section .d-flex {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filter-section .d-flex.gap-2 {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .filter-section .d-flex.gap-2 .btn {
+                flex: 1;
+                min-width: 0;
             }
 
             .input-group {
                 max-width: 100% !important;
             }
 
-            /* Tables for Mobile */
+            .collapsible-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .collapsible-title {
+                font-size: 0.95rem;
+            }
+
+            .collapsible-body {
+                padding: 1rem;
+            }
+
+            .section-controls {
+                justify-content: center;
+            }
+
+            .section-controls .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .teacher-table th,
+            .teacher-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .teacher-subject {
+                font-size: 0.9rem;
+            }
+
+            .teacher-name {
+                font-size: 0.8rem;
+            }
+
+            .kbm-link {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Tables for Mobile - Horizontal Scroll with Sticky Columns */
             .table-wrapper {
-                margin: 0 -1rem 1.5rem -1rem;
-                /* Full width break-out */
+                margin: 0 -1rem 1rem -1rem;
                 border-radius: 0;
                 border-left: none;
                 border-right: none;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                position: relative;
+            }
+
+            .table-wrapper::-webkit-scrollbar {
+                height: 8px;
+            }
+
+            .table-wrapper::-webkit-scrollbar-track {
+                background: var(--bg-body);
+            }
+
+            .table-wrapper::-webkit-scrollbar-thumb {
+                background: var(--border-color);
+                border-radius: 4px;
             }
 
             .table {
                 min-width: 800px;
-                /* Ensure 31 columns are readable */
             }
 
             .teacher-table {
                 min-width: 600px;
-                /* Ensure teacher table is readable */
-            }
-
-            .teacher-table td,
-            .teacher-table th {
-                padding: 1rem 0.75rem;
             }
 
             .col-nama {
-                width: 140px;
+                width: 150px;
+                min-width: 140px;
             }
 
-            /* Sticky Name Column for Attendance */
-            .table thead tr:first-child th:nth-child(2),
-            .table tbody tr td:nth-child(2) {
-                position: sticky;
-                left: 35px;
-                /* Offset by No column */
-                background: #0f172a !important;
-                z-index: 10;
-                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            }
-
-            .table thead tr:first-child th:first-child,
-            .table tbody tr td:first-child {
+            /* Sticky columns for Attendance Table */
+            .table thead tr:first-child th:nth-child(1),
+            .table tbody tr td:nth-child(1) {
                 position: sticky;
                 left: 0;
                 background: #1e293b !important;
                 z-index: 11;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Sticky Name Column */
+            .table thead tr:first-child th.col-nama {
+                position: sticky;
+                left: 40px;
+                background: #1e293b !important;
+                z-index: 10;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Sticky header rows */
+            .table thead tr {
+                position: sticky;
+                top: 0;
+                z-index: 20;
+            }
+
+            .table thead tr:first-child {
+                z-index: 21;
+            }
+
+            /* Improve cell touch targets */
+            .editable-cell {
+                padding: 8px 2px;
+            }
+
+            .editable-cell span {
+                font-size: 0.9rem;
+            }
+
+            .col-nama {
+                position: sticky;
+                left: 40px;
+                background: #1e293b !important;
+                z-index: 10;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+                white-space: nowrap;
+                font-size: 0.85rem;
+                max-width: 160px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .col-no {
+                width: 40px;
+                min-width: 40px;
+            }
+
+            .col-status-sum {
+                width: 36px;
+                min-width: 36px;
+            }
+
+            /* Attendance summary cells */
+            .bg-soft-success,
+            .bg-soft-warning,
+            .bg-soft-danger {
+                font-size: 0.85rem;
             }
 
             #rekapKeterangan {
                 padding: 1rem;
                 font-size: 0.85rem;
+                border-radius: 0 0 12px 12px;
+                border-left: none;
+                border-top: 4px solid #10b981;
+            }
+
+            /* Search input full width */
+            #searchStudent {
+                width: 100%;
+            }
+
+            /* Date picker button full width */
+            #btnCalendar {
+                width: 100%;
+            }
+            }
+
+            /* Search input full width */
+            #searchStudent {
+                width: 100%;
             }
         }
 
-        /* Extreme Mobile (300px - 400px) */
-        @media (max-width: 400px) {
+        /* ===== RESPONSIVE: Small Mobile (<= 480px) ===== */
+        @media (max-width: 480px) {
             #journalContainer {
-                padding: 1rem 0.75rem;
+                padding: 0.75rem 0.5rem;
+                margin: 0.25rem;
+                border-radius: 6px;
+            }
+
+            .text-center.mb-5 {
+                margin-bottom: 2rem !important;
+            }
+
+            .text-center.mb-5 h1 {
+                font-size: 1.25rem !important;
+            }
+
+            .text-center.mb-5 h2 {
+                font-size: 0.9rem !important;
             }
 
             .page-header h3 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+            }
+
+            .page-header p {
+                font-size: 0.85rem !important;
             }
 
             .badge {
-                padding: 0.4rem 0.6rem;
+                padding: 0.35rem 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            .collapsible-header {
+                padding: 0.75rem 0.75rem;
+            }
+
+            .collapsible-title {
+                font-size: 0.9rem;
+            }
+
+            .collapsible-body {
+                padding: 0.75rem;
+            }
+
+            .collapsible-badge {
+                font-size: 0.7rem !important;
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            .teacher-table th,
+            .teacher-table td {
+                padding: 0.6rem 0.4rem;
+            }
+
+            .teacher-subject {
+                font-size: 0.85rem;
+            }
+
+            .teacher-name {
                 font-size: 0.75rem;
+            }
+
+            .kbm-link {
+                font-size: 0.75rem;
+                padding: 6px 8px;
+            }
+
+            .col-nama {
+                width: 130px;
+                min-width: 120px;
+            }
+
+            .col-no {
+                width: 36px;
+                min-width: 36px;
+            }
+
+            .col-status-sum {
+                width: 32px;
+                min-width: 32px;
+                font-size: 0.75rem;
+            }
+
+            .editable-cell span {
+                font-size: 0.85rem;
+            }
+
+            #rekapKeterangan {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .section-controls .btn {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.75rem;
+            }
+
+            .filter-btn {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .page-header .back-link {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+        }
+
+        /* ===== RESPONSIVE: Extra Small Mobile (<= 360px) ===== */
+        @media (max-width: 360px) {
+            #journalContainer {
+                padding: 0.5rem 0.25rem;
+            }
+
+            .page-header h3 {
+                font-size: 1rem;
+            }
+
+            .collapsible-header {
+                padding: 0.6rem 0.6rem;
+            }
+
+            .collapsible-title {
+                font-size: 0.85rem;
+            }
+
+            .collapsible-body {
+                padding: 0.6rem;
+            }
+
+            .teacher-subject {
+                font-size: 0.8rem;
+            }
+
+            .teacher-name {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Print styles - always expanded */
+        @media print {
+            .collapsible-section {
+                break-inside: avoid;
+            }
+            .collapsible-section.collapsed .collapsible-content {
+                max-height: 5000px;
+                opacity: 1;
+            }
+            .collapsible-toggle {
+                display: none;
+            }
+            .section-controls {
+                display: none;
             }
         }
     </style>
@@ -467,7 +979,7 @@
         <div class="filter-section no-print">
             <input type="hidden" name="usr" value="{{ $usr }}">
 
-            <div class="d-flex flex-wrap gap-2 align-items-center">
+            <div class="filter-nav">
                 @php
                     $currentDate = \Carbon\Carbon::create($year, $month, $day);
                     $prevDate = (clone $currentDate)->subDay();
@@ -475,38 +987,38 @@
                 @endphp
 
                 <a href="{{ route('journal.show', ['class' => $grade, 'day' => $prevDate->day, 'month' => $prevDate->month, 'year' => $prevDate->year, 'usr' => $usr]) }}"
-                    class="btn btn-outline-primary btn-sm px-3">
-                    <i class="fas fa-angle-double-left me-2"></i>Tanggal Sebelumnya
+                    class="btn btn-outline-primary btn-sm filter-btn px-3 py-2" style="min-height: 44px;">
+                    <i class="fas fa-angle-double-left me-2"></i><span class="d-none d-sm-inline">Tanggal Sebelumnya</span><span class="d-sm-none">Sebelum</span>
                 </a>
 
                 <a href="{{ route('journal.show', ['class' => $grade, 'day' => $nextDate->day, 'month' => $nextDate->month, 'year' => $nextDate->year, 'usr' => $usr]) }}"
-                    class="btn btn-outline-primary btn-sm px-3">
-                    Tanggal Selanjutnya<i class="fas fa-angle-double-right ms-2"></i>
+                    class="btn btn-outline-primary btn-sm filter-btn px-3 py-2" style="min-height: 44px;">
+                    <span class="d-none d-sm-inline">Tanggal Selanjutnya</span><span class="d-sm-none">Selanjut</span><i class="fas fa-angle-double-right ms-2"></i>
                 </a>
 
-                <div class="position-relative">
-                    <button type="button" id="btnCalendar" class="btn btn-outline-primary btn-sm px-3">
-                        <i class="fas fa-calendar-alt me-2"></i>{{ $currentDate->translatedFormat('d F Y') }}
+                <div class="position-relative filter-btn" style="min-height: 44px;">
+                    <button type="button" id="btnCalendar" class="btn btn-outline-primary w-100 h-100 px-3 py-2 text-truncate" style="white-space: nowrap;">
+                        <i class="fas fa-calendar-alt me-2"></i>{{ $currentDate->translatedFormat('d M Y') }}
                     </button>
                     <input type="text" id="flatpickr-date" value="{{ sprintf('%04d-%02d-%02d', $year, $month, $day) }}"
                         style="position:absolute; opacity:0; pointer-events:none; left:0; bottom:0; width:100%;">
                 </div>
+            </div>
 
-                <div class="ms-md-auto d-flex gap-2">
-                    <button id="btnSave" class="btn btn-primary"><i data-feather="save"></i> Simpan</button>
+            <div class="filter-actions">
+                <button id="btnSave" class="btn btn-primary w-100" style="min-height: 44px;"><i data-feather="save" class="me-1"></i><span class="d-none d-sm-inline">Simpan</span></button>
 
-                    @if (Auth::user()->is_admin)
-                        <a href="{{ route('journal.export', [
-                            'class' => $grade,
-                            'month' => $month,
-                            'year' => $year,
-                            'day' => $day,
-                        ]) }}"
-                            class="btn btn-info">
-                            <i data-feather="download"></i> Export Excel
-                        </a>
-                    @endif
-                </div>
+                @if (Auth::user()->is_admin)
+                    <a href="{{ route('journal.export', [
+                        'class' => $grade,
+                        'month' => $month,
+                        'year' => $year,
+                        'day' => $day,
+                    ]) }}"
+                        class="btn btn-info w-100" style="min-height: 44px;">
+                        <i data-feather="download" class="me-1"></i><span class="d-none d-sm-inline">Export Excel</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -519,151 +1031,191 @@
                 </p>
             </div>
         @else
-            {{-- =================== TABEL MAPEL / GURU =================== --}}
-            <div class="table-wrapper" style="margin-bottom: 24px;">
-                <table class="teacher-table">
-                    <thead>
-                        <tr>
-                            <th style="width:160px">Mapel / Mata Pelajaran</th>
-                            <th style="width:200px">Nama Guru</th>
-                            <th>Materi KBM</th>
-                            <th>Daftar Absen</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($teachers as $index => $t)
-                            @php
-                                $mapelData = $t->mapel[$grade] ?? null;
-
-                                // Kalau array, ambil satu (atau join)
-                                if (is_array($mapelData)) {
-                                    $sub = $mapelData[0] ?? null;
-                                } else {
-                                    $sub = $mapelData;
-                                }
-
-                                $note = $sub && isset($noteIndexed[$sub]) ? $noteIndexed[$sub] : null;
-
-                                // PERMISSION CHECK: Admin bisa edit semua, Guru cuma bisa edit miliknya sendiri
-                                $canEditKbm = Auth::user()->is_admin || Auth::id() == $t->id;
-                            @endphp
-
-
-                            <tr>
-                                <td>{{ $sub }}</td>
-                                <td>{{ $t->name }}</td>
-
-                                {{-- ====== KBM ====== --}}
-                                <td @if ($canEditKbm) onclick="addKeterangan(this)" @endif
-                                    data-subject="{{ $sub }}" data-teacher="{{ $t->id }}">
-
-                                    <div class="d-flex align-items-center justify-content-between gap-2">
-                                        @if ($canEditKbm)
-                                            <a href="#" role="button" tabindex="0" class="kbm-link"
-                                                style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}"
-                                                onclick="addKeterangan(this.closest('td')); event.preventDefault();">
-                                                @if ($note)
-                                                    {!! nl2br(e($note->note)) !!}
-                                                @else
-                                                    <i data-feather="edit-2" style="width: 16px; height: 16px; display: inline; vertical-align: -2px;"></i> Klik untuk tambah keterangan
-                                                @endif
-                                            </a>
-                                        @else
-                                            <div class="kbm-link disabled"
-                                                style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}; cursor: default; background: transparent; border: none; padding: 0;">
-                                                @if ($note)
-                                                    {!! nl2br(e($note->note)) !!}
-                                                @else
-                                                    -
-                                                @endif
-                                            </div>
-                                        @endif
-                                    </div>
-                                </td>
-
-                                {{-- ====== KOLOM KETERANGAN (HANYA SEKALI) ====== --}}
-                                @if ($loop->first)
-                                    <td style="max-width: 300px; width: 300px; word-wrap: break-word;"
-                                        rowspan="{{ count($teachers) }}" id="rekapKeterangan">
-                                        <em class="text-muted">Tidak ada siswa absen</em>
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
-                    </tbody>
-
-
-                </table>
+            {{-- ================= SECTION CONTROLS ================= --}}
+            <div class="section-controls no-print">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="expandAll">
+                    <i data-feather="maximize-2" class="me-1"></i> Buka Semua
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="collapseAll">
+                    <i data-feather="minimize-2" class="me-1"></i> Tutup Semua
+                </button>
             </div>
 
+            {{-- =================== SECTION 1: MAPEL / GURU =================== --}}
+            <div class="collapsible-section section-teachers" data-section="teachers">
+                <div class="collapsible-header" data-toggle="teachers">
+                    <div class="collapsible-title">
+                        <i data-feather="book-open"></i>
+                        <span>Mata Pelajaran & Guru</span>
+                    </div>
+                    <span class="collapsible-badge">{{ $teachers->count() }} Mapel</span>
+                    <div class="collapsible-toggle" aria-label="Toggle section">
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="table-wrapper" style="margin-bottom: 0;">
+                            <table class="teacher-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:160px">Mapel / Mata Pelajaran</th>
+                                        <th style="width:200px">Nama Guru</th>
+                                        <th>Materi KBM</th>
+                                        <th>Daftar Absen</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach ($teachers as $index => $t)
+                                        @php
+                                            $mapelData = $t->mapel[$grade] ?? null;
+
+                                            // Kalau array, ambil satu (atau join)
+                                            if (is_array($mapelData)) {
+                                                $sub = $mapelData[0] ?? null;
+                                            } else {
+                                                $sub = $mapelData;
+                                            }
+
+                                            $note = $sub && isset($noteIndexed[$sub]) ? $noteIndexed[$sub] : null;
+
+                                            // PERMISSION CHECK: Admin bisa edit semua, Guru cuma bisa edit miliknya sendiri
+                                            $canEditKbm = Auth::user()->is_admin || Auth::id() == $t->id;
+                                        @endphp
 
 
-            <div class="input-group me-auto" style="max-width: 300px;">
-                <span class="input-group-text bg-transparent border-end-0 text-muted">
-                    <i data-feather="search" style="width: 16px; height: 16px;"></i>
-                </span>
-                <input type="text" id="searchStudent" class="form-control border-start-0 ps-0"
-                    placeholder="Cari nama siswa...">
+                                        <tr>
+                                            <td>
+                                                <div class="teacher-subject">{{ $sub }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="teacher-name">{{ $t->name }}</div>
+                                            </td>
+
+                                            {{-- ====== KBM ====== --}}
+                                            <td @if ($canEditKbm) onclick="addKeterangan(this)" @endif
+                                                data-subject="{{ $sub }}" data-teacher="{{ $t->id }}">
+
+                                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                                    @if ($canEditKbm)
+                                                        <a href="#" role="button" tabindex="0" class="kbm-link"
+                                                            style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}"
+                                                            onclick="addKeterangan(this.closest('td')); event.preventDefault();">
+                                                            @if ($note)
+                                                                {!! nl2br(e($note->note)) !!}
+                                                            @else
+                                                                <i data-feather="edit-2" style="width: 16px; height: 16px; display: inline; vertical-align: -2px;"></i> Klik untuk tambah keterangan
+                                                            @endif
+                                                        </a>
+                                                    @else
+                                                        <div class="kbm-link disabled"
+                                                            style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}; cursor: default; background: transparent; border: none; padding: 0;">
+                                                            @if ($note)
+                                                                {!! nl2br(e($note->note)) !!}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            {{-- ====== KOLOM KETERANGAN (HANYA SEKALI) ====== --}}
+                                            @if ($loop->first)
+                                                <td style="max-width: 300px; width: 300px; word-wrap: break-word;"
+                                                    rowspan="{{ count($teachers) }}" id="rekapKeterangan">
+                                                    <em class="text-muted">Tidak ada siswa absen</em>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            {{-- ================= Tabel Absensi ================= --}}
-            <div class="table-wrapper">
-                <table class="table table-bordered align-middle">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="col-no">No</th>
-                            <th rowspan="2" class="col-nama">Nama Siswa</th>
-                            <th colspan="31" id="tgl"
-                                style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.05)); color: #38bdf8; font-weight: 600;">
-                                {{ \Carbon\Carbon::create($year, $month, 1)->translatedFormat('F Y') }}</th>
-                            <th rowspan="2" class="col-status-sum">S</th>
-                            <th rowspan="2" class="col-status-sum">I</th>
-                            <th rowspan="2" class="col-status-sum">A</th>
-                        </tr>
-                        <tr>
-                            @php
-                                $currentDay = (int) date('d');
-                                $isCurrentMonthYear = $month == date('m') && $year == date('Y');
-                            @endphp
-                            @for ($i = 1; $i <= 31; $i++)
-                                <th style="width: 35px;"
-                                    class="{{ $isCurrentMonthYear && $i == $currentDay ? 'today-highlight' : '' }}">
-                                    {{ $i }}
-                                </th>
-                            @endfor
-                        </tr>
-                    </thead>
+            {{-- =================== SECTION 2: ABSENSI =================== --}}
+            <div class="collapsible-section section-attendance" data-section="attendance">
+                <div class="collapsible-header" data-toggle="attendance">
+                    <div class="collapsible-title">
+                        <i data-feather="users"></i>
+                        <span>Absensi Siswa</span>
+                    </div>
+                    <span class="collapsible-badge">{{ $students->count() }} Siswa</span>
+                    <div class="collapsible-toggle" aria-label="Toggle section">
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-body">
+                        <div class="input-group me-auto mb-3" style="max-width: 300px;">
+                            <span class="input-group-text bg-transparent border-end-0 text-muted">
+                                <i data-feather="search" style="width: 16px; height: 16px;"></i>
+                            </span>
+                            <input type="text" id="searchStudent" class="form-control border-start-0 ps-0"
+                                placeholder="Cari nama siswa...">
+                        </div>
 
-                    <tbody>
-                        @foreach ($students as $index => $student)
-                            <tr>
-                                <td class="col-no">{{ $index + 1 }}</td>
-                                <td class="col-nama">{{ $student->name }}</td>
+                        {{-- ================= Tabel Absensi ================= --}}
+                        <div class="table-wrapper">
+                            <table class="table table-bordered align-middle">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="col-no">No</th>
+                                        <th rowspan="2" class="col-nama">Nama Siswa</th>
+                                        <th colspan="31" id="tgl"
+                                            style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.05)); color: #38bdf8; font-weight: 600;">
+                                            {{ \Carbon\Carbon::create($year, $month, 1)->translatedFormat('F Y') }}</th>
+                                        <th rowspan="2" class="col-status-sum">S</th>
+                                        <th rowspan="2" class="col-status-sum">I</th>
+                                        <th rowspan="2" class="col-status-sum">A</th>
+                                    </tr>
+                                    <tr>
+                                        @php
+                                            $currentDay = (int) date('d');
+                                            $isCurrentMonthYear = $month == date('m') && $year == date('Y');
+                                        @endphp
+                                        @for ($i = 1; $i <= 31; $i++)
+                                            <th style="width: 35px;"
+                                                class="{{ $isCurrentMonthYear && $i == $currentDay ? 'today-highlight' : '' }}">
+                                                {{ $i }}
+                                            </th>
+                                        @endfor
+                                    </tr>
+                                </thead>
 
-                                @for ($i = 1; $i <= 31; $i++)
-                                    <td class="editable-cell {{ $isCurrentMonthYear && $i == $currentDay ? 'today-highlight' : '' }}"
-                                        data-student="{{ $student->id }}" data-day="{{ $i }}">
-                                        <span
-                                            style="display: inline-block; min-width: 20px;">{{ $attendance[$student->id][$i] ?? '' }}</span>
-                                    </td>
-                                @endfor
+                                <tbody>
+                                    @foreach ($students as $index => $student)
+                                        <tr>
+                                            <td class="col-no">{{ $index + 1 }}</td>
+                                            <td class="col-nama">{{ $student->name }}</td>
 
-                                <td class="bg-soft-success col-status-sum">
-                                    {{ $summary[$student->id]['S'] ?? 0 }}</td>
-                                <td class="bg-soft-warning col-status-sum">
-                                    {{ $summary[$student->id]['I'] ?? 0 }}</td>
-                                <td class="bg-soft-danger col-status-sum">
-                                    {{ $summary[$student->id]['A'] ?? 0 }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                            @for ($i = 1; $i <= 31; $i++)
+                                                <td class="editable-cell {{ $isCurrentMonthYear && $i == $currentDay ? 'today-highlight' : '' }}"
+                                                    data-student="{{ $student->id }}" data-day="{{ $i }}">
+                                                    <span
+                                                        style="display: inline-block; min-width: 20px;">{{ $attendance[$student->id][$i] ?? '' }}</span>
+                                                </td>
+                                            @endfor
+
+                                            <td class="bg-soft-success col-status-sum">
+                                                {{ $summary[$student->id]['S'] ?? 0 }}</td>
+                                            <td class="bg-soft-warning col-status-sum">
+                                                {{ $summary[$student->id]['I'] ?? 0 }}</td>
+                                            <td class="bg-soft-danger col-status-sum">
+                                                {{ $summary[$student->id]['A'] ?? 0 }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
-
-
-
 
     </div>
 
@@ -789,12 +1341,143 @@
     </script>
 
 
-    updateHeaderText();
+    {{-- ================= SIMPAN DATA ================= --}}
 
-
-
+    {{-- ================= PERINGATAN KELUAR ================= --}}
+    <script>
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsaved && !skipUnloadWarning) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     </script>
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
 
+                // Jangan ganggu textarea / input
+                if (['TEXTAREA', 'INPUT', 'SELECT'].includes(e.target.tagName)) return;
+
+                // Jika SweetAlert terbuka
+                if (document.querySelector('.swal2-container')) {
+                    const confirmBtn = document.querySelector('.swal2-confirm');
+                    if (confirmBtn) confirmBtn.click();
+                    return;
+                }
+
+                // Jika ada perubahan
+                if (hasUnsaved) {
+                    e.preventDefault();
+                    document.getElementById('btnSave').click();
+                }
+            }
+        });
+        document.getElementById('btnSave').addEventListener('click', async function() {
+
+            const params = new URLSearchParams(window.location.search);
+            const className = params.get('class');
+
+            // Gunakan data dari PHP sebagai angka (integer)
+            const selectedDay = {{ $day }};
+            const selectedMonth = {{ $month }};
+            const selectedYear = {{ $year }};
+
+            const dateStr =
+                `${selectedYear}-${selectedMonth.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
+
+            Swal.fire({
+                title: 'Menyimpan Data...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            // ================= KBM =================
+            let kbmData = [];
+            document.querySelectorAll('.teacher-table tbody td[data-subject]').forEach(td => {
+                const a = td.querySelector('a');
+                const text = a.textContent.trim();
+
+                // if (text.startsWith('[')) {
+                //     const time = text.match(/\[(\d{2}:\d{2})\]/)?.[1];
+                //     const note = text.replace(/^\[\d{2}:\d{2}\]\s*/, '');
+                if (text && !text.includes('Klik untuk tambah')) {
+                    // const time = text.match(/\[(\d{2}:\d{2})\]/)?.[1];
+                    // const note = text.replace(/^\[\d{2}:\d{2}\]\s*/, '');
+                    const time = '00:00'; // default time
+                    const note = text;
+
+                    kbmData.push({
+                        subject: td.dataset.subject,
+                        teacher_id: td.dataset.teacher,
+                        date: dateStr,
+                        time: '00:00', // default time
+                        note
+                    });
+                }
+            });
+
+            // ================= ABSENSI =================
+            let attendanceData = [];
+            document.querySelectorAll('.editable-cell').forEach(cell => {
+                const value = cell.textContent.trim().toUpperCase();
+                if (['S', 'I', 'A'].includes(value)) {
+                    attendanceData.push({
+                        student_id: cell.dataset.student,
+                        day: cell.dataset.day,
+                        value
+                    });
+                }
+            });
+
+            if (kbmData.length === 0 && attendanceData.length === 0) {
+                Swal.fire('Tidak ada perubahan', '', 'info');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/journal/save-all?class=${className}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        month: selectedMonth,
+                        year: selectedYear,
+                        kbm: kbmData,
+                        attendance: attendanceData
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    skipUnloadWarning = true;
+                    Swal.fire('Berhasil!', 'Data jurnal berhasil tersimpan.', 'success')
+                        .then(() => location.reload());
+                } else {
+                    let errorMessage = data.message || 'Terjadi kesalahan saat menyimpan.';
+                    if (data.errors) {
+                        // Gabungkan semua pesan error validasi jika ada
+                        errorMessage = Object.values(data.errors).flat().join('<br>');
+                    }
+                    Swal.fire('Gagal!', errorMessage, 'error');
+                }
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire(
+                    'Gagal!',
+                    'Tidak bisa menyimpan data. Periksa koneksi internet atau hubungi admin.',
+                    'error'
+                );
+            }
+        });
+    </script>
     <script>
         function addKeterangan(ts) {
 
@@ -805,7 +1488,7 @@
             const originalText = p.textContent;
             const originalColor = p.style.color;
 
-            // Kalau masih placeholder → kosongkan dulu
+            // Kalau masih placeholder -> kosongkan dulu
             if (isPlaceholder) {
                 p.textContent = "";
                 p.style.color = "var(--info-color)";
@@ -874,7 +1557,7 @@
                     const ket = (result.value.ket || "").trim();
 
                     if (ket === "") {
-                        // Jika user hapus isinya → tampilkan placeholder lagi
+                        // Jika user hapus isinya -> tampilkan placeholder lagi
                         p.innerHTML =
                             "<i data-feather=\"edit-2\" style=\"width: 16px; height: 16px; display: inline; vertical-align: -2px; margin-right: 4px;\"></i>Klik untuk tambah keterangan";
                         p.style.color = "#94a3b8";
@@ -952,7 +1635,7 @@
 
             // ================= KBM =================
             let kbmData = [];
-            document.querySelectorAll('.teacher-table tbody td[data-subject]').forEach(td => {
+            document.queryAll('.teacher-table tbody td[data-subject]').forEach(td => {
                 const a = td.querySelector('a');
                 const text = a.textContent.trim();
 
@@ -1165,6 +1848,85 @@
             if (typeof feather !== 'undefined') {
                 feather.replace();
             }
+        });
+    </script>
+    <script>
+        // ===== COLLAPSIBLE SECTIONS LOGIC =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.collapsible-section');
+            
+            // Load saved state from localStorage (only for non-admin users)
+            const isTeacher = {{ !Auth::user()->is_admin ? 'true' : 'false' }};
+            if (isTeacher) {
+                sections.forEach(section => {
+                    const sectionName = section.dataset.section;
+                    const savedState = localStorage.getItem(`journal_section_${sectionName}`);
+                    if (savedState === 'collapsed') {
+                        section.classList.add('collapsed');
+                    }
+                });
+            }
+
+            // Toggle function
+            function toggleSection(header) {
+                const section = header.closest('.collapsible-section');
+                if (!section) return;
+                
+                const isCollapsed = section.classList.toggle('collapsed');
+                const sectionName = section.dataset.section;
+                
+                if (isTeacher) {
+                    localStorage.setItem(`journal_section_${sectionName}`, isCollapsed ? 'collapsed' : 'expanded');
+                }
+                
+                // Update feather icons
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                }
+            }
+
+            // Click handlers for headers
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    // Don't toggle if clicking on a link/button inside
+                    if (e.target.closest('a, button, .kbm-link')) return;
+                    toggleSection(this);
+                });
+            });
+
+            // Expand All button
+            document.getElementById('expandAll')?.addEventListener('click', function() {
+                sections.forEach(section => {
+                    section.classList.remove('collapsed');
+                    if (isTeacher) {
+                        localStorage.setItem(`journal_section_${section.dataset.section}`, 'expanded');
+                    }
+                });
+                if (typeof feather !== 'undefined') feather.replace();
+            });
+
+            // Collapse All button
+            document.getElementById('collapseAll')?.addEventListener('click', function() {
+                sections.forEach(section => {
+                    section.classList.add('collapsed');
+                    if (isTeacher) {
+                        localStorage.setItem(`journal_section_${section.dataset.section}`, 'collapsed');
+                    }
+                });
+                if (typeof feather !== 'undefined') feather.replace();
+            });
+
+            // Keyboard accessibility
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleSection(this);
+                    }
+                });
+                header.setAttribute('tabindex', '0');
+                header.setAttribute('role', 'button');
+            });
         });
     </script>
 @endsection

@@ -22,7 +22,6 @@ class TeacherController extends Controller
         $user->phone_num = $request->phone_num;
         
         if ($request->filled('password')) {
-            $request->validate(['password' => 'min:6']);
             $user->password = Hash::make($request->password);
         }
         

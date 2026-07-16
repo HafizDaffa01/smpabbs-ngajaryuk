@@ -52,7 +52,7 @@
                     <div id="map" class="map-container"></div>
                     <input type="hidden" id="lokasi" name="lokasi" required>
                     <input type="text" id="alamat" name="alamat" class="form-control" placeholder="Lokasi akan muncul di sini" readonly required onclick="showLokasiPopup()" style="cursor: pointer;">
-                    <input type="text" id="lokasi_dms" class="form-control mt-2" placeholder="Koordinat (DMS)" readonly onclick="showLokasiPopup()" style="cursor: pointer;">
+                    <input type="text" id="lokasi_dms" class="form-control mt-2 lokasi-dms-field" placeholder="Koordinat (DMS)" readonly onclick="showLokasiPopup()" style="cursor: pointer;">
                 </div>
             </div>
 
@@ -409,111 +409,165 @@
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 480px) {
     .attendance-container {
-        padding: 5px;
+        padding: 4px;
+        min-height: auto;
     }
 
     .attendance-card {
         max-width: 100%;
+        border-radius: 10px;
     }
 
     .attendance-header {
-        padding: 15px 10px;
+        padding: 7px 10px;
+    }
+
+    .clock-section {
+        gap: 8px;
+    }
+
+    .clock-section i {
+        font-size: 1.44rem;
     }
 
     .clock-text {
-        font-size: 1.5rem;
+        font-size: 1.24rem;
     }
 
     .date-text {
-        font-size: 0.75rem;
+        font-size: 0.64rem;
+        margin-top: 1px;
     }
 
     .greeting-section {
-        padding: 12px 15px;
+        padding: 5px 10px;
+    }
+
+    .greeting-section i {
+        font-size: 0.94rem;
     }
 
     .greeting-section h4 {
-        font-size: 0.9rem;
+        font-size: 0.84rem;
     }
 
     #absensiForm {
-        padding: 12px;
-        gap: 12px;
-    }
-
-    .form-section {
+        padding: 8px;
         gap: 6px;
     }
 
+    .form-section {
+        gap: 2px;
+    }
+
     .form-label {
-        font-size: 0.85rem;
+        font-size: 0.77rem;
+        margin-bottom: 0;
+    }
+
+    .form-control {
+        padding: 6px 8px;
+        font-size: 0.81rem;
+    }
+
+    .form-control-lg {
+        min-height: 34px;
+        font-size: 0.86rem;
     }
 
     .map-container {
-        height: 140px;
+        height: 99px;
     }
 
     .camera-feed,
     .photo-preview {
-        height: 160px;
+        height: 149px;
     }
 
     .buttons-container {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin: 5px 0;
+        gap: 6px;
+        margin: 0;
     }
 
     .btn {
-        width: 100%;
-        padding: 10px 16px;
-        font-size: 0.9rem;
+        padding: 7px 7px;
+        font-size: 0.76rem;
     }
 
     .btn-lg {
-        padding: 12px 16px;
-        font-size: 0.95rem;
+        padding: 8px 9px;
+        font-size: 0.81rem;
+    }
+
+    .btn-icon i {
+        font-size: 0.86rem;
+    }
+
+    .lokasi-dms-field {
+        display: none;
     }
 
     #notification-container {
-        top: 5px;
-        right: 5px;
-        left: 5px;
+        top: 4px;
+        right: 4px;
+        left: 4px;
     }
 
     .notification {
         min-width: auto;
         width: 100%;
-        padding: 10px 14px;
-        font-size: 0.85rem;
+        padding: 6px 8px;
+        font-size: 0.77rem;
     }
 }
 
 @media (max-width: 360px) {
+    .attendance-container {
+        padding: 2px;
+    }
+
+    .attendance-header {
+        padding: 6px 8px;
+    }
+
+    .clock-section i {
+        font-size: 1.2rem;
+    }
+
     .clock-text {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
+    }
+
+    .greeting-section {
+        padding: 5px 8px;
     }
 
     .greeting-section h4 {
-        font-size: 0.85rem;
+        font-size: 0.78rem;
     }
 
-    .form-label {
-        font-size: 0.8rem;
+    #absensiForm {
+        padding: 7px;
+        gap: 5px;
     }
 
     .map-container {
-        height: 120px;
+        height: 80px;
     }
 
     .camera-feed,
     .photo-preview {
-        height: 140px;
+        height: 120px;
     }
 
     .btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
+        padding: 6px 6px;
+        font-size: 0.72rem;
+    }
+
+    .btn-lg {
+        padding: 7px 8px;
+        font-size: 0.77rem;
     }
 }
 </style>
@@ -756,16 +810,13 @@ function showLokasiPopup() {
             `,
             width: 600,
             didOpen: () => {
-                // Data lokasi user
                 const [lat, lon] = lokasi.split(',').map(Number);
 
-                // Inisialisasi map kecil
                 const popupMap = L.map('popupMap').setView([targetLat, targetLon], 17);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: ''
                 }).addTo(popupMap);
 
-                // Titik SMP ABBS (hijau)
                 const targetMarkerPopup = L.marker([targetLat, targetLon], {
                     icon: L.icon({
                         iconUrl: greenIcon.options.iconUrl,
@@ -781,23 +832,19 @@ function showLokasiPopup() {
                     radius: radius
                 }).addTo(popupMap);
 
-                // Hitung jarak user ke target
                 const distance = getDistance(lat, lon, targetLat, targetLon);
 
-                // Tentukan warna marker user (biru/merah)
                 const userIcon = L.icon({
                     iconUrl: distance <= radius
-                        ? blueIcon.options.iconUrl // biru
-                        : redIcon.options.iconUrl, // merah
+                        ? blueIcon.options.iconUrl
+                        : redIcon.options.iconUrl,
                     iconSize: [30, 30]
                 });
 
-                // Tambah marker user
                 L.marker([lat, lon], { icon: userIcon })
                     .addTo(popupMap)
                     .bindPopup("Posisi Anda");
 
-                // Atur agar kedua titik terlihat
                 const group = L.featureGroup([
                     targetMarkerPopup,
                     L.marker([lat, lon])

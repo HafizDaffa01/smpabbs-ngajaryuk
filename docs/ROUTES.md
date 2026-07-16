@@ -137,6 +137,7 @@ All require `auth` + `admin` middleware.
 | GET | `/prevSmes/presensi` | `rekap.showPresensi` | JournalController@showRekapPresensi |
 | GET | `/profile` | `profile.edit` | ProfileController@edit |
 | PUT | `/profile` | `profile.update_new` | ProfileController@update |
+| PUT | `/profile/password` | `profile.password.update` | ProfileController@updatePassword |
 | POST | `/profile/update` | `profile.update` | TeacherController@updateProfile |
 
 ---
