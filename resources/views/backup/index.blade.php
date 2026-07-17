@@ -146,12 +146,12 @@
                                 </thead>
                                 <tbody>
                                     @php $no = 1; @endphp
-                                    @foreach ($gridData as $nama => $row)
+                                    @foreach ($gridData as $key => $row)
                                         @php $tot = 0; @endphp
-                                        <tr data-nama="{{ $nama }}" data-unit="{{ $row['unit'] ?? '' }}">
+                                        <tr data-nama="{{ $row['nama'] }}" data-user-id="{{ is_string($key) && str_starts_with($key, 'nouser_') ? '' : $key }}" data-unit="{{ $row['unit'] ?? '' }}">
                                             <td class="sticky-col" style="left:0;">{{ $no++ }}</td>
                                             <td class="sticky-col text-start" style="left:50px;">
-                                                {{ $nama }}
+                                                {{ $row['nama'] }}
                                             </td>
                                             @foreach ($days as $d)
                                                 @php
@@ -209,11 +209,11 @@
                                 </thead>
                                 <tbody>
                                     @php $no = 1; @endphp
-                                    @foreach ($gridData as $nama => $row)
-                                        <tr data-nama="{{ $nama }}" data-unit="{{ $row['unit'] ?? '' }}">
+                                    @foreach ($gridData as $key => $row)
+                                        <tr data-nama="{{ $row['nama'] }}" data-user-id="{{ is_string($key) && str_starts_with($key, 'nouser_') ? '' : $key }}" data-unit="{{ $row['unit'] ?? '' }}">
                                             <td class="sticky-col" style="left:0;">{{ $no++ }}</td>
                                             <td class="sticky-col text-start" style="left:50px;">
-                                                {{ $nama }}
+                                                {{ $row['nama'] }}
                                             </td>
                                             @foreach ($days as $d)
                                                 @php
@@ -222,7 +222,7 @@
                                                 @endphp
                                                 <td
                                                     @if ($absen && !empty($absen->lokasi)) class="cell-clickable date-col"
-                                                onclick="showMap('{{ $absen->lokasi }}', '{{ $nama }}', '{{ \Carbon\Carbon::parse($absen->waktu)->format('d F Y, H:i:s') }}', '{{ $absen->alamat }}');" @else class="date-col" @endif>
+                                                onclick="showMap('{{ $absen->lokasi }}', '{{ $row['nama'] }}', '{{ \Carbon\Carbon::parse($absen->waktu)->format('d F Y, H:i:s') }}', '{{ $absen->alamat }}');" @else class="date-col" @endif>
                                                     @if ($absen)
                                                         <span class="small">
                                                             <i class="fas fa-map-marker-alt text-danger me-1"></i>
@@ -298,11 +298,11 @@
                                 </thead>
                                 <tbody>
                                     @php $no = 1; @endphp
-                                    @foreach ($gridData as $nama => $row)
-                                        <tr data-nama="{{ $nama }}" data-unit="{{ $row['unit'] ?? '' }}">
+                                    @foreach ($gridData as $key => $row)
+                                        <tr data-nama="{{ $row['nama'] }}" data-user-id="{{ is_string($key) && str_starts_with($key, 'nouser_') ? '' : $key }}" data-unit="{{ $row['unit'] ?? '' }}">
                                             <td class="sticky-col" style="left:0;">{{ $no++ }}</td>
                                             <td class="sticky-col text-start" style="left:50px;">
-                                                {{ $nama }}
+                                                {{ $row['nama'] }}
                                             </td>
 
                                             @foreach ($days as $d)
@@ -316,7 +316,7 @@
                                                         @if ($warningMode)
                                                             {{-- MODE WARNING --}}
                                                             <div class="text-warning" style="cursor:pointer"
-                                                                onclick="showImage('{{ url('/' . $absen->foto) }}','{{ $nama }}','{{ $tgl }}')">
+                                                                onclick="showImage('{{ url('/' . $absen->foto) }}','{{ $row['nama'] }}','{{ $tgl }}')">
                                                                 <i class="fas fa-exclamation-triangle"
                                                                     style="font-size:24px;"></i>
                                                             </div>
@@ -325,7 +325,7 @@
                                                             <img src="{{ url('/' . $absen->foto) }}" width="60"
                                                                 height="60" class="img-thumbnail"
                                                                 style="object-fit:cover;cursor:pointer"
-                                                                onclick="showImage('{{ url('/' . $absen->foto) }}','{{ $nama }}','{{ $tgl }}')">
+                                                                onclick="showImage('{{ url('/' . $absen->foto) }}','{{ $row['nama'] }}','{{ $tgl }}')">
                                                         @endif
                                                     @else
                                                         <span class="text-muted">-</span>
@@ -767,6 +767,7 @@
 
             let row = td.closest("tr");
             let nama = row.dataset.nama;
+            let userId = row.dataset.userId || '';
             let unit = row.dataset.unit;
             let date = td.getAttribute("data-date");
             let value = current || "-";
@@ -783,6 +784,7 @@
                     },
                     body: JSON.stringify({
                         nama,
+                        user_id: userId ? parseInt(userId) : null,
                         unit,
                         date,
                         value,

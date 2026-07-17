@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Absensi;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use ZipArchive;
@@ -47,13 +48,15 @@ class BackupController extends Controller
 
         // ========== QUERY DASAR ==========
         $query = Absensi::query()
-            ->when($search, fn($q) => $q->where('nama', 'like', "%$search%"))
+            ->when($search, function ($q) use ($search) {
+                $q->whereHas('user', fn($uq) => $uq->where('name', 'like', "%$search%"));
+            })
             ->when($filterMonth && $filterYear, function ($q) use ($filterMonth, $filterYear) {
                 [$start, $end] = $this->getPeriodRange($filterMonth, $filterYear);
                 $q->whereBetween('waktu', [$start, $end]);
             });
 
-        $absensis = $query->get();
+        $absensis = $query->with('user')->get();
 
         [$start, $end] = $this->getPeriodRange($filterMonth, $filterYear);
 
@@ -65,18 +68,23 @@ class BackupController extends Controller
         }
 
         foreach ($absensis as $a) {
-            $name = $a->nama;
+            $userId = $a->user_id;
+            $key = $userId ?? 'nouser_' . $a->nama;
+            $name = $a->user?->name ?? $a->nama;
             $tgl  = Carbon::parse($a->waktu)->format('Y-m-d');
-            $gridData[$name]['unit'] = $a->unit ?? '-';
+            $gridData[$key]['nama'] = $name;
+            $gridData[$key]['unit'] = $a->unit ?? '-';
 
             if ($dataType === 'lokasi' || $dataType === 'gambar') {
-                $gridData[$name]['data'][$tgl] = $a; // simpan seluruh objek absensi
+                $gridData[$key]['data'][$tgl] = $a;
             } else {
                 $jam = Carbon::parse($a->waktu)->format('H:i');
-                $gridData[$name]['data'][$tgl] = $jam;
+                $gridData[$key]['data'][$tgl] = $jam;
             }
         }
 
+        usort($gridData, fn($a, $b) => strcasecmp($a['nama'], $b['nama']));
+        $gridData = array_values($gridData);
 
         return view('backup.index', compact(
             'months',
@@ -100,12 +108,12 @@ class BackupController extends Controller
                 $results[] = [
                     'nama'  => $row['nama'],
                     'date'  => $row['date'],
-                    'value' => $this->saveAbsensiCell($row['nama'], $row['date'], $row['value'])
+                    'value' => $this->saveAbsensiCell($row['nama'], $row['date'], $row['value'], $row['user_id'] ?? null)
                 ];
             }
             return response()->json(['success' => true, 'results' => $results]);
         } else {
-            $value = $this->saveAbsensiCell($request->nama, $request->date, $request->value);
+            $value = $this->saveAbsensiCell($request->nama, $request->date, $request->value, $request->user_id ?? null);
             return response()->json([
                 'success' => true,
                 'value'   => $value
@@ -113,7 +121,7 @@ class BackupController extends Controller
         }
     }
 
-    private function saveAbsensiCell($nama, $date, $value)
+    private function saveAbsensiCell($nama, $date, $value, $userId = null)
     {
         // Default jika kosong
         if (trim((string)$value) === '' || $value === '-') {
@@ -129,19 +137,34 @@ class BackupController extends Controller
             $jam   = $waktu->format('H:i'); // format final
         }
 
-        $absen = Absensi::where('nama', $nama)
-            ->whereDate('waktu', $date)
-            ->first();
+        $absen = Absensi::where('waktu', '>=', Carbon::parse($date)->startOfDay())
+            ->where('waktu', '<=', Carbon::parse($date)->endOfDay());
+
+        if ($userId) {
+            $absen = $absen->where('user_id', $userId);
+        } else {
+            $absen = $absen->where('nama', $nama);
+        }
+
+        $absen = $absen->first();
 
         if ($absen) {
             $absen->update(['waktu' => $waktu]);
         } else {
+            $displayName = $nama;
+            if ($userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $displayName = $user->name;
+                }
+            }
             Absensi::create([
-                'nama'   => $nama,
-                'waktu'  => $waktu,
-                'unit'   => Auth::user()->unit ?? '-',
-                'lokasi' => '-',
-                'foto'   => '-',
+                'user_id' => $userId,
+                'nama'    => $displayName,
+                'waktu'   => $waktu,
+                'unit'    => Auth::user()->unit ?? '-',
+                'lokasi'  => '-',
+                'foto'    => '-',
             ]);
         }
 
@@ -187,19 +210,27 @@ class BackupController extends Controller
         }
 
         $absensis = Absensi::query()
-            ->when($search, fn($q) => $q->where('nama', 'like', "%$search%"))
+            ->when($search, function ($q) use ($search) {
+                $q->whereHas('user', fn($uq) => $uq->where('name', 'like', "%$search%"));
+            })
             ->whereBetween('waktu', [$start, $end->endOfDay()])
-            ->orderBy('nama')
+            ->with('user')
+            ->orderBy('user_id')
             ->get();
 
         $grid = [];
         foreach ($absensis as $a) {
+            $userId = $a->user_id;
+            $key = $userId ?? 'nouser_' . $a->nama;
+            $name = $a->user?->name ?? $a->nama;
             $tgl = Carbon::parse($a->waktu)->format('Y-m-d');
-            if (!isset($grid[$a->nama])) {
-                $grid[$a->nama] = [];
+            if (!isset($grid[$key])) {
+                $grid[$key]['nama'] = $name;
             }
-            $grid[$a->nama][$tgl] = Carbon::parse($a->waktu)->format('H:i');
+            $grid[$key]['data'][$tgl] = Carbon::parse($a->waktu)->format('H:i');
         }
+
+        uasort($grid, fn($a, $b) => strcasecmp($a['nama'], $b['nama']));
         $uuid = substr((string) Str::uuid(), 0, 7);
         $filename = "Backup_Absensi@{$monthKey}_{$year}#{$uuid}.csv";
 
@@ -220,13 +251,13 @@ class BackupController extends Controller
 
             // Data Tabel
             $no = 1;
-            foreach ($grid as $nama => $row) {
-                $line = [$no++, $nama];
+            foreach ($grid as $row) {
+                $line = [$no++, $row['nama']];
                 $tot = 0;
 
                 foreach ($days as $d) {
                     $tgl = $d->format('Y-m-d');
-                    $val = $row[$tgl] ?? '-';
+                    $val = $row['data'][$tgl] ?? '-';
                     $line[] = $val;
 
                     if ($val !== '-' && $val <= '06:50') {
@@ -251,10 +282,13 @@ class BackupController extends Controller
         $year = $request->year ?? date('Y');
 
         $absensis = Absensi::query()
-            ->when($search, fn($q) => $q->where('nama', 'like', "%$search%"))
+            ->when($search, function ($q) use ($search) {
+                $q->whereHas('user', fn($uq) => $uq->where('name', 'like', "%$search%"));
+            })
             ->whereYear('waktu', $year)
-            ->orderBy('nama')
-            ->get(['nama', 'lokasi', 'alamat', 'waktu']);
+            ->with('user')
+            ->orderBy('user_id')
+            ->get(['id', 'user_id', 'nama', 'lokasi', 'alamat', 'waktu']);
 
         if ($absensis->isEmpty()) {
             return back()->with('error', 'Tidak ada data absensi untuk diekspor.');
@@ -271,7 +305,7 @@ class BackupController extends Controller
             foreach ($absensis as $a) {
                 fputcsv($output, [
                     $no++,
-                    $a->nama,
+                    $a->user?->name ?? $a->nama,
                     $a->lokasi,
                     $a->alamat,
                     Carbon::parse($a->waktu)->format('d-m-Y H:i')
@@ -302,10 +336,11 @@ class BackupController extends Controller
 
         $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-            foreach ($data as $a) {
-                $uuid = substr((string) Str::uuid(), 0, 7);
-                $ext  = pathinfo($a->foto, PATHINFO_EXTENSION) ?: 'jpg';
-                $name = "{$a->nama}@" . date('d-m-Y') . "#{$uuid}.{$ext}";
+                foreach ($data as $a) {
+                    $uuid = substr((string) Str::uuid(), 0, 7);
+                    $ext  = pathinfo($a->foto, PATHINFO_EXTENSION) ?: 'jpg';
+                    $displayName = $a->user?->name ?? $a->nama;
+                    $name = "{$displayName}@" . date('d-m-Y') . "#{$uuid}.{$ext}";
 
                 $filePath = public_path($a->foto);
                 if (file_exists($filePath)) {
