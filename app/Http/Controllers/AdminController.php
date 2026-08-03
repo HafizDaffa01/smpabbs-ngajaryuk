@@ -7,10 +7,8 @@ use App\Models\User;
 use App\Models\Absensi;
 use Illuminate\Support\Facades\File;
 use App\Models\Student;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use App\Imports\TeacherImport;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -18,6 +16,11 @@ use Illuminate\Http\RedirectResponse;
 
 class AdminController extends Controller
 {
+    public function importPage(): View
+    {
+        return view('admin.import');
+    }
+
     public function index(): View
     {
         $users = User::where('name', '!=', 'AdminABBS')->get();
@@ -80,28 +83,6 @@ class AdminController extends Controller
         $users = \App\Models\Teacher::where('is_admin', 0)->get();
         return view('admin.partials.teacher-table', compact('users'));
     }
-
-    public function importTeachers(Request $request): JsonResponse
-    {
-        $request->validate([
-            'excel' => 'required|file|mimes:xlsx,xls,csv|max:10240'
-        ]);
-
-        try {
-            Excel::import(new TeacherImport, $request->file('excel'));
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Import guru berhasil!'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'error' => 'Terjadi kesalahan sistem: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
 
     public function updateTeacher(Request $request, $id): JsonResponse
     {

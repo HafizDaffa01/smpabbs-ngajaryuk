@@ -560,6 +560,12 @@
                         @auth
                             @if (Auth::user()->is_admin)
                                 <li class="nav-item">
+                                    <a class="nav-link {{ Request::is('admin/import') ? 'active' : '' }}"
+                                        href="{{ url('/admin/import') }}">
+                                        <i class="fas fa-file-import me-1"></i> Import
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link {{ Request::is('admin') ? 'active' : '' }}"
                                         href="{{ url('/admin') }}">
                                         <i class="fas fa-tachometer-alt me-1"></i> Dashboard

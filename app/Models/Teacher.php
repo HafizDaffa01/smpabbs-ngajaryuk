@@ -40,6 +40,9 @@ class Teacher extends Model
     {
         if (!$value) return [];
 
+        // Jika sudah berupa array (misal dari setAttribute atau JSON decode sebelumnya)
+        if (is_array($value)) return $value;
+
         // Perbaiki JSON
         $value = $this->fixJson($value);
 

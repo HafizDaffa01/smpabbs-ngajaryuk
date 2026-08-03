@@ -8,18 +8,23 @@ class SubjectHelper
      * Mapping dari nama mata pelajaran ke nama kanonik.
      */
     private static array $mapping = [
-        'ICT' => ['ICT', 'KOMPUTER', 'COMPUTER', 'IT'],
-        'SPORT' => ['SPORT', 'PJOK', 'OLGA', 'OLAHRAGA', 'PHE'],
-        'Civics' => ['CIVIC', 'PKN', 'PPKN', 'CIVICS'],
+        'ICT' => ['ICT', 'KOMPUTER', 'COMPUTER', 'IT', 'TIK', 'INFORMATIKA'],
+        'SPORT' => ['SPORT', 'PJOK', 'OLGA', 'OLAHRAGA', 'PHE', 'SPRT'],
+        'Civics' => ['CIVIC', 'PKN', 'PPKN', 'CIVICS', 'CV'],
         'IFE' => ['IFE', 'AGAMA', 'ISLAM', 'PAI', 'BP'],
-        'Indonesian' => ['BINDO', 'INDO', 'INDONESIA', 'INDONESIAN', 'B. INDO'],
-        'Science' => ['IPA', 'SCIENCE'],
-        'Social' => ['SOCIAL', 'IPS'],
+        'Indonesian' => ['BINDO', 'INDO', 'INDONESIA', 'INDONESIAN', 'B. INDO', 'BI'],
+        'Science' => ['IPA', 'SCIENCE', 'SC'],
+        'Social' => ['SOCIAL', 'IPS', 'SOC'],
         'TKA INDO' => ['TKA INDO', 'TKAINDO', 'TI', 'TKAIND', 'TKA IND'],
         'TKA Mathematics' => ['TM', 'TKA MATH', 'TKAMATH', 'TKAMAT', 'TKA MATHEMATICS'],
-        'Quran' => ['QURAN', 'QUR\'AN', 'AL-QURAN', 'AQ'],
+        'Quran' => ['QURAN', 'QUR\'AN', 'AL-QURAN', 'AQ', 'QURAN'],
         'English' => ['ENGLISH', 'INGGRIS', 'B. INGGRIS', 'ENG'],
         'Mathematics' => ['MATH', 'MATHEMATICS', 'MATEMATIKA', 'MAT'],
+        'Leadership' => ['LEADERSHIP'],
+        'Homeroom Teacher' => ['HOMEROOM TEACHER'],
+        'Scout' => ['SCOUT'],
+        'Seni Budaya Kesenian' => ['SENI BUDAYA KESENIAN'],
+        'Self Development' => ['SELF DEVELOPMENT'],
     ];
 
     /**

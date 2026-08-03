@@ -55,16 +55,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::put('/user/{id}/make-admin', 'makeAdmin')->name('admin.makeAdmin');
             Route::put('/user/{id}/remove-admin', 'removeAdmin')->name('admin.removeAdmin');
             Route::get('/teacher/table', 'teacherTable')->name('admin.teacher.table');
-            Route::post('/import-teachers', 'importTeachers')->name('import.teachers');
+
         });
 
         Route::get('/ts', [JournalController::class, 'admin'])->name('jurnal.admin');
         Route::post('/add-teacher', [TeacherController::class, 'store'])->name('admin.addTeacher');
     });
+});
 
-    // Student Import
-    Route::post('/import-students', [ImportController::class, 'import'])->name('import.students');
+// Import routes (accessible without admin middleware)
+Route::get('/admin/import', [AdminController::class, 'importPage'])->name('admin.import');
+Route::post('/import-students', [ImportController::class, 'import'])->name('import.students');
 
+// Admin-only routes
+Route::middleware(['auth', 'admin'])->group(function () {
     // Journal Exports
     Route::get('/journal/export', [JournalController::class, 'export'])->name('journal.export');
 
@@ -82,14 +86,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/export-waktu', 'exportWaktu')->name('backup.exportWaktu');
         Route::get('/export-lokasi', 'exportLokasi')->name('backup.exportLokasi');
     });
+});
 
-    // Schedule Management
-    Route::prefix('schedule')->controller(ScheduleController::class)->group(function () {
-        Route::get('/', 'index')->name('schedule.index');
-        Route::post('/import', 'import')->name('schedule.import');
-    });
+// Schedule Management
+Route::prefix('schedule')->controller(ScheduleController::class)->group(function () {
+    Route::get('/', 'index')->name('schedule.index');
+    Route::post('/import', 'import')->name('schedule.import');
+    Route::post('/preview', 'preview')->name('schedule.preview');
+});
 
-    // Explorer (File Manager)
+// Admin-only routes
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::prefix('explorer')->controller(FileManagerController::class)->group(function () {
         Route::get('/', 'index')->name('explorer.index');
         Route::post('/folder', 'createFolder')->name('explorer.folder');
@@ -143,3 +150,4 @@ Route::get('/error', function () {
 
 // Redirect /home ke /
 Route::redirect('/home', '/');
+

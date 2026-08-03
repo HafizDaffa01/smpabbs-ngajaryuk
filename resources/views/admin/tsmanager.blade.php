@@ -270,7 +270,7 @@
             <hr class="section-divider">
 
             <div class="row g-4">
-                <div class="col-md-6">
+                <div class="col-md-7">
                     <div class="panel card h-100">
                         <h5 class="section-title mt-0">Tambah Siswa Baru</h5>
                         <form id="addStudentForm">
@@ -291,28 +291,6 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">Tambah</button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="panel card h-100">
-                        <h5 class="section-title mt-0">Import dari Excel</h5>
-                        <form id="excelForm" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-uppercase">Pilih File Excel:</label>
-                                <input type="file" id="excelInput" name="excel" accept=".xlsx, .xls" required
-                                    class="form-control form-control-sm">
-                            </div>
-                            <div class="d-flex gap-2 mb-3">
-                                <button type="button" id="lihatPrev" class="btn btn-secondary grow">Lihat Preview</button>
-                                <button type="submit" class="btn btn-primary grow">Import Excel</button>
-                            </div>
-
-                            <div id="tableContainerStudent" class="mt-2">
-                                <p class="text-main small italic opacity-50 m-0">Preview murid akan muncul di sini...</p>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -402,32 +380,9 @@
                     </div>
                 </div>
 
-                <div class="col-md-5">
-                    <div class="panel card h-100">
-                        <h5 class="section-title mt-0">Import Guru (Excel)</h5>
-                        <form id="excelFormTeacher" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-uppercase">Pilih File Excel:</label>
-                                <input type="file" id="excelInputTeacher" name="excel" accept=".xlsx, .xls"
-                                    required class="form-control form-control-sm">
-                            </div>
-                            <div class="d-flex gap-2 mb-3">
-                                <button type="button" id="lihatPrevTeacher" class="btn btn-secondary grow">Lihat Preview</button>
-                                <button type="submit" class="btn btn-primary grow">Import Excel</button>
-                            </div>
-
-                            <div id="tableContainerTeacher" class="mt-2">
-                                <p class="text-main small italic opacity-50 m-0">Preview guru akan muncul di sini...</p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-
-    <script>
         // ==========================================
         //  GLOBAL / UTILITY
         // ==========================================
@@ -823,82 +778,6 @@
                 });
             }
 
-            const excelFormTeacher = document.getElementById('excelFormTeacher');
-            if (excelFormTeacher) {
-                const excelInputTeacher = document.getElementById('excelInputTeacher');
-                const lihatPrevTeacherBtn = document.getElementById('lihatPrevTeacher');
-                const tableContainerTeacher = document.getElementById('tableContainerTeacher');
-                let previewDataTeacher = [];
-                let previewVisibleTeacher = false;
-
-                excelInputTeacher.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (!file || typeof XLSX === 'undefined') return;
-                    const reader = new FileReader();
-                    reader.onload = ev => {
-                        const workbook = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
-                        previewDataTeacher = workbook.SheetNames.map(name => ({
-                            sheet: name,
-                            data: XLSX.utils.sheet_to_json(workbook.Sheets[name])
-                        }));
-                    };
-                    reader.readAsArrayBuffer(file);
-                });
-
-                lihatPrevTeacherBtn.addEventListener('click', () => {
-                    previewVisibleTeacher = !previewVisibleTeacher;
-                    lihatPrevTeacherBtn.textContent = previewVisibleTeacher ? 'Sembunyikan Preview' : 'Lihat Preview';
-                    if (!previewVisibleTeacher) {
-                        tableContainerTeacher.innerHTML = '';
-                        return;
-                    }
-                    let html = '';
-                    previewDataTeacher.forEach(sheet => {
-                        if (!sheet.data.length) return;
-                        html += `<h5 class="mt-3 text-main">${sheet.sheet}</h5><table class="ts-table"><thead><tr>`;
-                        Object.keys(sheet.data[0]).forEach(k => html += `<th>${k}</th>`);
-                        html += `</tr></thead><tbody>`;
-                        sheet.data.forEach(row => {
-                            html += '<tr>';
-                            Object.values(row).forEach(v => html += `<td>${v||''}</td>`);
-                            html += '</tr>';
-                        });
-                        html += '</tbody></table>';
-                    });
-                    tableContainerTeacher.innerHTML = html || '<p class="text-muted small">File kosong</p>';
-                });
-
-                excelFormTeacher.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'Mengimpor...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-                    fetch("{{ route('import.teachers') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: new FormData(this)
-                    }).then(r => r.json()).then(d => {
-                        Swal.close();
-                        if (d.status === 'success') {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Import berhasil'
-                            });
-                            excelInputTeacher.value = '';
-                            tableContainerTeacher.innerHTML = '<p class="text-main small italic opacity-50 m-0">Preview guru akan muncul di sini...</p>';
-                            previewDataTeacher = [];
-                            previewVisibleTeacher = false;
-                            lihatPrevTeacherBtn.textContent = 'Lihat Preview';
-                            loadTable();
-                            setTimeout(() => location.reload(), 700);
-                        } else Swal.fire("Error", d.error, "error");
-                    });
-                });
-            }
         }
 
         function deleteUser(id) {
@@ -1143,113 +1022,6 @@
         }
 
         // ==========================================
-        //  IMPORT / PREVIEW
-        // ==========================================
-        function initExcelPreviews() {
-            const excelForm = document.getElementById("excelForm");
-            if (!excelForm) return;
-
-            const excelInput = document.getElementById("excelInput");
-            const lihatPrevBtn = document.getElementById("lihatPrev");
-            const tableContainerStudent = document.getElementById("tableContainerStudent");
-            let previewData = [];
-            let previewVisible = false;
-
-            excelInput.addEventListener("change", function(e) {
-                const file = e.target.files[0];
-                if (!file || typeof XLSX === "undefined") return;
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    const workbook = XLSX.read(new Uint8Array(ev.target.result), {
-                        type: 'array'
-                    });
-                    previewData = workbook.SheetNames.map(name => ({
-                        sheet: name,
-                        data: XLSX.utils.sheet_to_json(workbook.Sheets[name])
-                    }));
-                };
-                reader.readAsArrayBuffer(file);
-            });
-
-            lihatPrevBtn.addEventListener("click", () => {
-                previewVisible = !previewVisible;
-                lihatPrevBtn.textContent = previewVisible ? "Sembunyikan Preview" : "Lihat Preview";
-                if (!previewVisible) {
-                    tableContainerStudent.innerHTML = "";
-                    return;
-                }
-                let html = "";
-                previewData.forEach(sheet => {
-                    if (!sheet.data.length) return;
-                    html +=
-                        `<h5 class="mt-3 text-main">${sheet.sheet}</h5><table class="ts-table"><thead><tr>`;
-                    Object.keys(sheet.data[0]).forEach(k => html += `<th>${k}</th>`);
-                    html += `</tr></thead><tbody>`;
-                    sheet.data.forEach(row => {
-                        html += "<tr>";
-                        Object.values(row).forEach(v => html += `<td>${v||''}</td>`);
-                        html += "</tr>";
-                    });
-                    html += "</tbody></table>";
-                });
-                tableContainerStudent.innerHTML = html;
-            });
-
-            excelForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Mengimpor...',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
-                });
-                fetch("{{ route('import.students') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: new FormData(this)
-                }).then(r => r.json()).then(d => {
-                    Swal.close();
-                    if (d.status === 'success') {
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Import berhasil'
-                        });
-                        setTimeout(() => location.reload(), 700);
-                    } else Swal.fire("Error", d.error, "error");
-                });
-            });
-
-            const addStudentForm = document.getElementById('addStudentForm');
-            if (addStudentForm) {
-                addStudentForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'Menambah...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-                    fetch("{{ route('import.students') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: new FormData(this)
-                    }).then(r => r.json()).then(d => {
-                        Swal.close();
-                        if (d.status === 'success') {
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Berhasil'
-                            });
-                            setTimeout(() => location.reload(), 700);
-                        } else Swal.fire("Error", d.error, "error");
-                    });
-                });
-            }
-        }
-
-        // ==========================================
         //  RECURSIVE DELETE
         // ==========================================
         async function deleteRecursive(ids, index, endpoint, batchSize = 5) {
@@ -1294,7 +1066,39 @@
             }
 
             initTeacherFeatures();
-            initExcelPreviews();
+
+            // Tambah Siswa Baru form handler
+            const addStudentForm = document.getElementById('addStudentForm');
+            if (addStudentForm) {
+                addStudentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Menambah...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                    fetch("{{ route('import.students') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: this.querySelector('[name="name"]').value,
+                            grade: this.querySelector('[name="grade"]').value
+                        })
+                    }).then(r => r.json()).then(d => {
+                        Swal.close();
+                        if (d.status === 'success') {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Berhasil'
+                            });
+                            setTimeout(() => location.reload(), 700);
+                        } else Swal.fire("Error", d.error, "error");
+                    });
+                });
+            }
         });
     </script>
 @endsection

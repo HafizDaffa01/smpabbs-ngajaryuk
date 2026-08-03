@@ -58,44 +58,6 @@
                 </div>
             </div>
 
-            {{-- Import Section --}}
-            <div class="col-lg-5">
-                <div class="card border-0 bg-soft-primary h-100">
-                    <div class="card-header bg-transparent pb-2 border-0" style="padding-top: calc(1.5rem) !important;">
-                        <h5 class="mb-0 fw-800 text-primary">
-                            <i class="fas fa-file-excel me-2"></i>Import Jadwal
-                        </h5>
-                    </div>
-                    <div class="card-body pt-2">
-                        <form id="importForm" method="POST" action="{{ route('schedule.import') }}"
-                            enctype="multipart/form-data" onsubmit="handleImport(event)">
-                            @csrf
-                            <div class="input-group input-group-sm mb-2">
-                                <input type="file" name="file" class="form-control form-control-sm"
-                                    accept=".xlsx, .xls" required style="width: 250px;">
-                                <button type="submit" class="btn btn-primary btn-sm px-4">
-                                    <i class="fas fa-upload me-1"></i>Import
-                                </button>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="confirm" value="1" id="importConfirm" required>
-                                <label class="form-check-label small text-danger fw-700" for="importConfirm">
-                                    Saya mengerti data lama akan dihapus dan digantikan
-                                </label>
-                            </div>
-                            <div class="d-flex align-items-start mt-2">
-                                <i class="fas fa-info-circle text-primary me-2 mt-1 small"></i>
-                                <p class="small mb-0">
-                                    Gunakan template Excel. <span class="text-danger fw-700">Peringatan: Data lama akan
-                                        ditimpa!</span>
-                                </p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Schedule Table --}}
         <div class="card border-0">
             <div class="card-header bg-transparent py-4 border-0 d-flex justify-content-between align-items-center">
@@ -158,25 +120,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function handleImport(event) {
-            event.preventDefault();
-
-            Swal.fire({
-                title: 'Sedang Mengimport...',
-                text: 'Mohon tunggu sebentar, sistem sedang memproses file Excel Anda.',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                    // Submit form setelah swal muncul
-                    document.getElementById('importForm').submit();
-                }
-            });
-        }
-    </script>
 
     <style>
         .table-responsive {
