@@ -106,7 +106,7 @@
             <!-- Rekap Presensi Card -->
             <form action="{{ route('rekap.showPresensi') }}" method="GET" class="class-selector-card" id="formPresensi">
                 <input type="hidden" name="usr" value="{{ $usr }}">
-                <div class="class-icon-wrapper" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                <div class="class-icon-wrapper class-icon-rekap">
                     <i class="fas fa-clipboard-check"></i>
                 </div>
                 <div class="text-center mb-4">

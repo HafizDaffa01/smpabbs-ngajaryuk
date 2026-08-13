@@ -1,0 +1,104 @@
+// ==========================================
+// BASE STYLES
+// ==========================================
+
+// ----- Reset & Base -----
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $text-main;
+  background-color: $bg-body;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// ----- Typography -----
+h1, h2, h3, h4, h5, h6 {
+  color: $text-heading;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 0;
+  margin-bottom: $spacer-4;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin-top: 0;
+  margin-bottom: $spacer-4;
+  color: $text-muted;
+}
+
+a {
+  color: $primary-soft-text;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $primary;
+  }
+}
+
+// ----- Focus Styles -----
+:focus-visible {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+}
+
+// ----- Selection -----
+::selection {
+  background-color: rgba($primary, 0.3);
+  color: $text-heading;
+}
+
+// ----- Scrollbar -----
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-body;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $dark-600;
+  border-radius: $radius-full;
+
+  &:hover {
+    background: $dark-500;
+  }
+}
+
+// ----- Arabic Text -----
+.arabic-text {
+  font-family: $font-family-arabic;
+  direction: rtl;
+  text-align: right;
+  line-height: 2.2;
+}

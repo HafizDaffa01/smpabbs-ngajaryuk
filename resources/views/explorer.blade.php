@@ -3,140 +3,7 @@
 @section('title', 'Explorer')
 
 @section('content')
-    <style>
-        body {
-            background-color: var(--bg-body) !important;
-        }
-
-        .explorer-container {
-            background-color: var(--bg-card) !important;
-            border-radius: var(--card-radius);
-            padding: 2.5rem;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--card-shadow);
-            color: var(--text-main);
-        }
-
-        .table,
-        .table tr,
-        .table td,
-        .table th {
-            background-color: transparent !important;
-            background: transparent !important;
-            color: var(--text-main) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        .table thead th {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            color: var(--text-muted) !important;
-            border-bottom: 2px solid var(--border-color) !important;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        .table-hover tbody tr:hover td {
-            background-color: rgba(255, 255, 255, 0.02) !important;
-            color: var(--primary-color) !important;
-        }
-
-        .table tbody td {
-            color: var(--text-main) !important;
-            border-color: var(--border-color) !important;
-            vertical-align: middle;
-            padding: 0.75rem;
-        }
-
-        h1,
-        h4 {
-            color: var(--text-main);
-            font-weight: 800;
-        }
-
-        .text-muted {
-            color: var(--text-muted) !important;
-        }
-
-        .input-group-text {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-muted) !important;
-            font-weight: 700;
-            font-size: 0.8rem;
-        }
-
-        .form-control,
-        .form-select {
-            background-color: #0f172a !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-main) !important;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            background-color: #0f172a !important;
-            border-color: var(--primary-color) !important;
-            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
-        }
-
-        hr {
-            border-top: 1px solid var(--border-color);
-            opacity: 0.5;
-        }
-
-        a {
-            color: var(--info-color);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        a:hover {
-            color: var(--primary-color);
-            text-decoration: underline;
-        }
-
-        .btn-outline-secondary {
-            border-color: var(--border-color);
-            color: var(--text-muted);
-        }
-
-        .btn-outline-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-color: var(--text-main);
-            color: var(--text-main);
-        }
-
-        .folder-table,
-        .file-table {
-            background: transparent !important;
-        }
-
-        /* Custom scrollbar for dark mode */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        strong {
-            color: var(--text-main);
-        }
-    </style>
-    <div class="container-fluid explorer-container my-5" style="max-width: 1400px;">
+    <div class="container-fluid explorer-container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-color">
             <h1 class="h3 m-0 fw-800">
                 <i class="fas fa-folder-open text-primary me-2"></i>File Explorer
@@ -166,11 +33,11 @@
             </div>
             <div class="col-md-6">
                 <div class="d-flex justify-content-md-end align-items-center gap-2">
-                    <div class="input-group input-group-sm" style="max-width:250px;">
+                    <div class="input-group input-group-sm input-group-search">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                         <input type="text" id="searchInput" class="form-control" placeholder="Cari...">
                     </div>
-                    <select id="sortSelect" class="form-select form-select-sm" style="width:120px;">
+                    <select id="sortSelect" class="form-select form-select-sm sort-select">
                         <option value="az">A-Z</option>
                         <option value="za">Z-A</option>
                     </select>
@@ -182,12 +49,12 @@
             {{-- Folders --}}
             <div class="col-md-6">
                 <h4 class="h5 fw-800 mb-3"><i class="fas fa-folder text-warning me-2"></i>Folders</h4>
-                <div class="table-responsive" style="max-height: 500px;">
+                <div class="table-responsive table-scroll">
                     <table class="table table-hover align-middle folder-table">
                         <thead>
                             <tr>
                                 <th>Nama Folder</th>
-                                <th style="width:250px;">Aksi</th>
+                                <th class="action-col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -210,7 +77,7 @@
                                                 <input type="hidden" name="old_name" value="{{ $folderName }}">
                                                 <input type="hidden" name="type" value="folder">
                                                 <input type="text" name="new_name" placeholder="Nama Baru"
-                                                    class="form-control form-control-sm" style="width:100px;" required>
+                                                    class="form-control form-control-sm rename-input" required>
                                                 <button class="btn btn-sm btn-outline-warning" title="Ubah Nama">
                                                     <i class="fas fa-pen"></i>
                                                 </button>
@@ -235,12 +102,12 @@
             {{-- Files --}}
             <div class="col-md-6">
                 <h4 class="h5 fw-800 mb-3"><i class="fas fa-file-alt text-info me-2"></i>Files</h4>
-                <div class="table-responsive" style="max-height: 500px;">
+                <div class="table-responsive table-scroll">
                     <table class="table table-hover align-middle file-table">
                         <thead>
                             <tr>
                                 <th>Nama File</th>
-                                <th style="width:250px;">Aksi</th>
+                                <th class="action-col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -260,7 +127,7 @@
                                                 <input type="hidden" name="old_name" value="{{ $fileName }}">
                                                 <input type="hidden" name="type" value="file">
                                                 <input type="text" name="new_name" placeholder="Nama Baru"
-                                                    class="form-control form-control-sm" style="width:100px;" required>
+                                                    class="form-control form-control-sm rename-input" required>
                                                 <button class="btn btn-sm btn-outline-warning" title="Ubah Nama">
                                                     <i class="fas fa-pen"></i>
                                                 </button>
@@ -342,7 +209,7 @@
                 title: 'Konfirmasi Hapus Folder',
                 html: `
             Masukkan kode berikut untuk mengonfirmasi:<br><br>
-            <b style="font-size:24px; letter-spacing:3px;">${captchaCode}</b>
+            <b class="captcha-code">${captchaCode}</b>
         `,
                 icon: 'warning',
                 input: 'number',

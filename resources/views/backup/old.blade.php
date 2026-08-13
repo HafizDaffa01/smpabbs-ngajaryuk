@@ -11,7 +11,7 @@
         class="mb-3 d-flex flex-wrap gap-2">
 
         {{-- Bulan --}}
-        <select name="month" class="form-select" style="width:auto" onchange="this.form.submit()">
+        <select name="month" class="form-select" onchange="this.form.submit()">
             <option value="" selected disabled>-- Pilih Bulan --</option>
             @foreach($months as $key => $label)
                 <option value="{{ $key }}" {{ $filterMonth==$key ? 'selected' : '' }}>
@@ -21,7 +21,7 @@
         </select>
 
         {{-- Tahun --}}
-        <select name="year" class="form-select" style="width:auto" onchange="this.form.submit()">
+        <select name="year" class="form-select" onchange="this.form.submit()">
             <option value="" selected disabled>-- Pilih Tahun --</option>
             @foreach($years as $y)
                 <option value="{{ $y }}" {{ $filterYear==$y ? 'selected' : '' }}>
@@ -31,7 +31,7 @@
         </select>
 
         {{-- Tipe Data --}}
-        <select name="data_type" class="form-select" style="width:auto" onchange="this.form.submit()">
+        <select name="data_type" class="form-select" onchange="this.form.submit()">
             <option value="" selected disabled>-- Pilih Tipe Data --</option>
             <option value="waktu"  {{ $dataType==='waktu'  ? 'selected' : '' }}>Waktu</option>
             <option value="lokasi" {{ $dataType==='lokasi' ? 'selected' : '' }}>Lokasi</option>
@@ -40,7 +40,7 @@
 
         {{-- Search --}}
         <input type="text" name="search" class="form-control" placeholder="Cari..." 
-            value="{{ $search }}" style="flex:1; min-width:200px;">
+            value="{{ $search }}" class="flex-fill min-w-200">
 
         <button type="submit" class="btn btn-primary">Search</button>
 
@@ -64,9 +64,9 @@
     {{-- =================== TABEL WAKTU =================== --}}
     <div id="table-container">
         @if($dataType === 'waktu' && isset($days) && isset($gridData))
-        <div style="overflow-x:auto; max-width:100%;" class="table-wrapper">
+        <div class="table-wrapper overflow-auto">
             <table class="table table-bordered align-middle text-center">
-                <thead class="table-dark" style="background:#212529;">
+                <thead class="table-dark">
                     <tr>
                         <th rowspan="2" class="sticky-col sticky-header" style="left:0; z-index:3;">No</th>
                         <th rowspan="2" class="sticky-col sticky-header" style="left:50px; z-index:3;">Nama</th>
@@ -79,7 +79,7 @@
                         @foreach($days as $d)
                             <th class="sticky-header">
                                 {{ $d->format('d') }} <br>
-                                <span style="font-size:10px">{{ $d->translatedFormat('F') }}</span>
+                                <span class="text-xs">{{ $d->translatedFormat('F') }}</span>
                             </th>
                         @endforeach
                     </tr>
@@ -113,7 +113,7 @@
 
     {{-- =================== TABEL LOKASI =================== --}}
     @if($dataType === 'lokasi')
-    <div style="overflow-x:auto; max-width:100%;" class="table-wrapper">
+    <div class="table-wrapper overflow-auto">
         <table class="table table-striped table-bordered align-middle text-center">
             <thead class="table-dark">
                 <tr>

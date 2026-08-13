@@ -3,12 +3,12 @@
 @section('title', 'Rekap Semester - ' . $grade)
 
 @section('content')
-    <div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #f8fafc;">
+    <div class="rekap-page container-fluid py-4">
 
 
         <div class="position-relative">
-            <button type="button" class="btn btn-outline-info btn-sm px-4 py-2 fw-bold"
-                onclick="window.location.href = '{{ route('rekap.index') }}'" style="border-width: 2px; min-width: 200px;">
+            <button type="button" class="btn btn-outline-info btn-sm px-4 py-2 fw-bold btn-touch"
+                onclick="window.location.href = '{{ route('rekap.index') }}'">
                 <i class="fas fa-chevron-left me-2"></i>Kembali
             </button>
 
@@ -16,18 +16,18 @@
 
         <!-- Branding Header -->
         <div class="text-center mb-5 mt-2">
-            <h1 class="h2 fw-900 text-white mb-1" style="letter-spacing: 2px;">JOURNAL OF SUBJECT</h1>
+            <h1 class="h2 fw-900 text-white mb-1 text-spacing-wide">JOURNAL OF SUBJECT</h1>
             <h2 class="h5 fw-700 text-info opacity-75 mb-3">ABBS JUNIOR HIGH SCHOOL</h2>
         </div>
 
         <!-- Header Section -->
         <div class="d-flex align-items-center justify-content-between mb-5 flex-wrap gap-4 no-print mt-4">
             <div class="d-flex align-items-center">
-                <h1 class="h2 fw-800 text-white mb-0 me-3">{{ $grade }}</h1>
+                <h1 class="h2 fw-800 mb-0 me-3">{{ $grade }}</h1>
                 <nav aria-label="breadcrumb" class="d-none d-md-block">
-                    <ol class="breadcrumb mb-0" style="background: transparent; padding: 0;">
+                    <ol class="breadcrumb mb-0 bg-transparent p-0">
                         <li class="breadcrumb-item"><a href="{{ route('rekap.index') }}"
-                                class="text-info text-decoration-none fw-bold" style="color: #60a5fa !important;">Rekap</a>
+                                class="text-info text-decoration-none fw-bold">Rekap</a>
                         </li>
                         {{-- <li class="breadcrumb-item active text-light opacity-75">{{ $grade }}</li> --}}
                     </ol>
@@ -50,7 +50,7 @@
                     <div @if($viewType == 'daily') hidden @endif>
                         <span class="text-light small fw-bold">Semester:</span>
                         <select name="semester" class="form-select form-select-sm custom-dark-select" onchange="this.form.submit()" 
-                            style="min-width: 120px; background-color: #111827; color: #fff; border-color: rgba(255,255,255,0.2);" @if($viewType == 'daily') hidden @endif>
+                            @if($viewType == 'daily') hidden @endif>
                             <option value="1" {{ $semester == 1 ? 'selected' : '' }}>1 (Jan - Jun)</option>
                             <option value="2" {{ $semester == 2 ? 'selected' : '' }}>2 (Jul - Des)</option>
                         </select>
@@ -71,12 +71,11 @@
                         </a>
 
                         <div class="position-relative">
-                            <button type="button" id="btnCalendarRekap" class="btn btn-outline-info btn-sm px-4 py-2 fw-bold"
-                                style="border-width: 2px; min-width: 200px;">
+                            <button type="button" id="btnCalendarRekap" class="btn btn-outline-info btn-sm px-4 py-2 fw-bold btn-touch text-nowrap">
                                 <i class="fas fa-calendar-alt me-2"></i>{{ $currDateObj->translatedFormat('d F Y') }}
                             </button>
                             <input type="text" id="flatpickr-rekap"
-                                style="position:absolute; opacity:0; pointer-events:none; left:0; bottom:0; width:100%;">
+                                class="flatpickr-hidden">
                         </div>
 
                         <a href="{{ route('rekap.show', ['class' => $grade, 'view' => 'daily', 'date' => $nextDay->toDateString(), 'semester' => $semester]) }}"
@@ -95,13 +94,11 @@
         </div>
 
         <!-- Table Container -->
-        <div class="rekap-table-container shadow-lg border-radius-xl overflow-hidden mb-5"
-            style="background: var(--bg-card); border: 1px solid var(--border-color);">
-            <div class="p-4 border-bottom"
-                style="background: rgba(255, 255, 255, 0.01); border-color: var(--border-color) !important;">
+        <div class="rekap-table-container shadow-lg rounded-xl overflow-hidden mb-5">
+            <div class="p-4 border-bottom">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-800 text-white opacity-90">Rekap Jurnal & KBM</h5>
-                    <div class="text-info small fw-bold" style="opacity: 0.7;">
+                    <div class="text-info small fw-bold opacity-75">
                         <i class="fas fa-info-circle me-1"></i> Menampilkan histori kegiatan belajar dan siswa yang absen.
                     </div>
                 </div>
@@ -110,28 +107,18 @@
             <div class="table-responsive p-0">
                 <table class="table align-middle mb-0">
                     <thead>
-                        <tr style="background-color: rgba(255, 255, 255, 0.03) !important;">
-                            <th class="ps-4 py-3 border-0 text-info"
-                                style="width: 150px; font-size: 0.8rem; text-transform: uppercase; font-weight: 800;">
-                                Tanggal</th>
-                            <th class="py-3 border-0 text-info"
-                                style="width: 180px; font-size: 0.8rem; text-transform: uppercase; font-weight: 800;">
-                                Mata
+                        <tr>
+                            <th class="ps-4 py-3 border-0 text-info col-tanggal">Tanggal</th>
+                            <th class="py-3 border-0 text-info col-mapel">Mata
                                 Pelajaran</th>
-                            <th class="py-3 border-0 text-info"
-                                style="width: 180px; font-size: 0.8rem; text-transform: uppercase; font-weight: 800;">
-                                Guru
+                            <th class="py-3 border-0 text-info col-guru">Guru
                             </th>
-                            <th class="py-3 border-0 text-info"
-                                style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800;">
-                                Materi KBM</th>
-                            <th class="pe-4 py-3 border-0 text-info"
-                                style="width: 250px; font-size: 0.8rem; text-transform: uppercase; font-weight: 800;">
-                                Siswa
+                            <th class="py-3 border-0 text-info">Materi KBM</th>
+                            <th class="pe-4 py-3 border-0 text-info col-absensi">Siswa
                                 Absen</th>
                         </tr>
                     </thead>
-                    <tbody style="border-top: none;">
+                    <tbody class="border-top-0">
                         @php
                             if ($viewType == 'daily') {
                                 $startDateObj = \Carbon\Carbon::parse($selectedDate);
@@ -211,28 +198,25 @@
                             @endphp
 
                             @foreach ($rowsToShow as $idx => $row)
-                                <tr class="kbm-row" style="border-bottom: 1px solid var(--border-color);">
+                                <tr class="kbm-row">
                                     @if ($idx === 0)
                                         <td class="ps-4" rowspan="{{ $rowCount }}">
                                             <div class="d-flex flex-column">
                                                 <span class="fw-bold fs-6 text-white">
                                                     {{ $date->translatedFormat('d F Y') }}
                                                 </span>
-                                                <small class="text-muted opacity-75"
-                                                    style="font-size: 0.7rem;">{{ $date->translatedFormat('l') }}</small>
+                                                <small class="text-muted opacity-75 fw-600">{{ $date->translatedFormat('l') }}</small>
                                             </div>
                                         </td>
                                     @endif
 
                                     <td>
-                                        <span class="badge bg-info text-dark fw-bold px-3 py-2"
-                                            style="font-size: 0.75rem; min-width: 100px; text-align: center; color: #0f172a !important;">{{ $row['subject'] }}</span>
+                                        <span class="badge bg-info text-dark fw-bold px-3 py-2 badge-rekap">{{ $row['subject'] }}</span>
                                     </td>
                                     <td class="fw-bold text-white opacity-90 fs-6">{{ $row['teacher'] }}</td>
                                     <td>
                                         @if ($row['note'])
-                                            <div class="p-3 rounded shadow-sm"
-                                                style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); color: #cbd5e1; line-height: 1.5;">
+                                            <div class="p-3 rounded shadow-sm border kbm-note">
                                                 {{ $row['note'] }}
                                             </div>
                                         @else
@@ -246,20 +230,16 @@
                                         <td class="pe-4" rowspan="{{ $rowCount }}">
                                             <div class="d-flex flex-wrap gap-2">
                                                 @forelse($dayAbsents as $abs)
-                                                    @php
-                                                        $bgStyle =
-                                                            'background-color: rgba(13, 202, 240, 0.15); color: #67e8f9; border: 1px solid rgba(13, 202, 240, 0.2);';
-                                                        if ($abs['value'] == 'I') {
-                                                            $bgStyle =
-                                                                'background-color: rgba(255, 193, 7, 0.15); color: #fde047; border: 1px solid rgba(255, 193, 7, 0.2);';
-                                                        }
-                                                        if ($abs['value'] == 'A') {
-                                                            $bgStyle =
-                                                                'background-color: rgba(220, 53, 69, 0.15); color: #fca5a5; border: 1px solid rgba(220, 53, 69, 0.2);';
-                                                        }
-                                                    @endphp
-                                                    <span class="badge px-2 py-1"
-                                                        style="{{ $bgStyle }} font-size: 0.7rem; letter-spacing: 0.02em; font-weight: 700;">
+                                            @php
+                                                $absentClass = 'absent-s';
+                                                if ($abs['value'] == 'I') {
+                                                    $absentClass = 'absent-i';
+                                                }
+                                                if ($abs['value'] == 'A') {
+                                                    $absentClass = 'absent-a';
+                                                }
+                                            @endphp
+                                            <span class="badge px-2 py-1 {{ $absentClass }}">
                                                         {{ $abs['name'] }} ({{ $abs['value'] }})
                                                     </span>
                                                 @empty
@@ -278,8 +258,7 @@
                             <tr>
                                 <td colspan="5" class="text-center py-5">
                                     <div class="d-flex flex-column align-items-center">
-                                        <i class="fas fa-calendar-times text-warning mb-3"
-                                            style="font-size: 3rem; opacity: 0.2;"></i>
+                                        <i class="fas fa-calendar-times text-warning mb-3 fs-1 opacity-25"></i>
                                         <p class="text-muted fs-5">Tidak ada data KBM atau jadwal pada semester ini</p>
                                     </div>
                                 </td>

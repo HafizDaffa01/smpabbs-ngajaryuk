@@ -33,7 +33,7 @@
                     <div class="card-body pt-2">
                         <form method="GET" action="{{ route('schedule.index') }}" class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-700 small text-white">KELAS</label>
+                                <label class="form-label fw-700 small">KELAS</label>
                                 <select name="class" class="form-select" onchange="this.form.submit()">
                                     @foreach ($classes as $class)
                                         <option value="{{ $class }}"
@@ -44,7 +44,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-700 small text-white">HARI</label>
+                                <label class="form-label fw-700 small">HARI</label>
                                 <select name="day" class="form-select" onchange="this.form.submit()">
                                     @foreach ($days as $day)
                                         <option value="{{ $day }}" {{ $selectedDay == $day ? 'selected' : '' }}>
@@ -120,100 +120,4 @@
             </div>
         </div>
     </div>
-
-    <style>
-        .table-responsive {
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        /* Dark Table Overrides matching TS Manager */
-        .table {
-            --bs-table-bg: transparent !important;
-            --bs-table-color: var(--text-main) !important;
-            color: var(--text-main) !important;
-            border-collapse: collapse !important;
-            background: transparent !important;
-            margin-bottom: 0;
-        }
-
-        .table thead tr {
-            background: rgba(255, 255, 255, 0.05) !important;
-        }
-
-        .table th {
-            border-bottom: 2px solid var(--border-color) !important;
-            color: var(--text-main) !important;
-            font-weight: 800 !important;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            padding: 1.2rem 0.75rem !important;
-            background: transparent !important;
-        }
-
-        .table td {
-            border-bottom: 1px solid var(--border-color) !important;
-            padding: 1rem 0.75rem !important;
-            color: var(--text-main) !important;
-            background: transparent !important;
-        }
-
-        .table tbody tr,
-        .table tbody td {
-            background-color: transparent !important;
-            transition: background 0.2s ease;
-        }
-
-        .table-hover tbody tr:hover {
-            background: rgba(255, 255, 255, 0.04) !important;
-        }
-
-        .table-hover tbody tr:hover td {
-            color: var(--text-main) !important;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            padding: 0.35em 0.65em;
-        }
-
-        .card {
-            border: none;
-            border-radius: 12px;
-            background: rgba(30, 41, 59, 0.7) !important;
-            backdrop-filter: blur(8px);
-            overflow: hidden;
-        }
-
-        .card-header {
-            border-radius: 12px 12px 0 0 !important;
-            background: rgba(255, 255, 255, 0.03) !important;
-            border-bottom: 1px solid var(--border-color) !important;
-        }
-
-        .btn {
-            border-radius: 8px;
-        }
-
-        /* Modal Styles matching TS Manager */
-        .modal-content {
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-card);
-        }
-
-        .modal-header {
-            border-radius: 12px 12px 0 0;
-        }
-
-        .modal-body {
-            background: var(--bg-card);
-            color: var(--text-main);
-        }
-
-        .modal-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-        }
-    </style>
 @endsection

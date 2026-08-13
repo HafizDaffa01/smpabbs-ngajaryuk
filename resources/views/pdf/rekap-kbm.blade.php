@@ -85,6 +85,8 @@
         .page-break {
             page-break-after: always;
         }
+        .header-small { font-size: 9px; margin: 2px 0; }
+        .all-present { color: #28a745; font-size: 8px; }
     </style>
 </head>
 <body>
@@ -106,7 +108,7 @@
             <h1>JOURNAL OF SUBJECT</h1>
             <h2>ABBS JUNIOR HIGH SCHOOL</h2>
             <h3>TEACHING JOURNAL - CLASS {{ $grade }}</h3>
-            <p style="font-size: 9px; margin: 2px 0;">Semester: {{ $semester }} | Academic Year: {{ $academicYear }} | Page: {{ $chunkIndex + 1 }}</p>
+            <p class="header-small">Semester: {{ $semester }} | Academic Year: {{ $academicYear }} | Page: {{ $chunkIndex + 1 }}</p>
         </div>
 
         <table>
@@ -189,7 +191,7 @@
                                             {{ $abs['name'] }} ({{ $abs['value'] }})
                                         </div>
                                     @empty
-                                        <span style="color: #28a745; font-size: 8px;">All Present</span>
+                                        <span class="all-present">All Present</span>
                                     @endforelse
                                 </td>
                             @endif

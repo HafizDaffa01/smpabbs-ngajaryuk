@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\StudentsMultiSheetImport;
+use App\Imports\StudentDataImport;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class ImportController extends Controller
 {
@@ -14,9 +17,9 @@ class ImportController extends Controller
      * Import Excel siswa (multi-sheet) atau tambah manual.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function import(Request $request): JsonResponse
+    public function import(Request $request): RedirectResponse|JsonResponse
     {
         try {
             // --- 1. IMPORT DARI FILE EXCEL ---
@@ -28,13 +31,9 @@ class ImportController extends Controller
 
                 $file = $request->file('excel');
 
-                // Gunakan import multi-sheet
-                Excel::import(new StudentsMultiSheetImport, $file);
+                Excel::import(new StudentDataImport, $file);
 
-                return response()->json([
-                    'status'  => 'success',
-                    'message' => 'Import Excel berhasil diproses!'
-                ]);
+                return redirect()->back()->with('success', 'Import Excel berhasil diproses!');
             }
 
             // --- 2. TAMBAH SISWA MANUAL ---
@@ -55,10 +54,14 @@ class ImportController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'status'  => 'error',
-                'error'   => 'Terjadi kesalahan internal: ' . $e->getMessage()
-            ], 500);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Terjadi kesalahan internal: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Terjadi kesalahan internal: ' . $e->getMessage());
         }
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Teacher;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;

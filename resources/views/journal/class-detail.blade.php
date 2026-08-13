@@ -950,7 +950,7 @@
         
         <!-- Branding Header -->
         <div class="text-center mb-5">
-            <h1 class="h2 fw-900 text-white mb-1" style="letter-spacing: 2px;">JOURNAL OF SUBJECT</h1>
+            <h1 class="h2 fw-900 text-white mb-1 text-spacing-wide">JOURNAL OF SUBJECT</h1>
             <h2 class="h5 fw-700 text-info opacity-75 mb-3">ABBS JUNIOR HIGH SCHOOL</h2>
         </div>
 
@@ -964,9 +964,8 @@
                         Jurnal Kelas {{ $grade }}
                     @endif
                 </h3>
-                <p class="mb-0 mt-2"
-                    style="color: var(--text-muted); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-                    <i data-feather="calendar" style="width: 16px; height: 16px;"></i>
+                <p class="mb-0 mt-2 text-muted fw-600 d-flex align-items-center gap-2">
+                    <i data-feather="calendar" class="icon-sm"></i>
                     {{ \Carbon\Carbon::create($year, $month, $day)->translatedFormat('l, d F Y') }}
                 </p>
             </div>
@@ -987,26 +986,26 @@
                 @endphp
 
                 <a href="{{ route('journal.show', ['class' => $grade, 'day' => $prevDate->day, 'month' => $prevDate->month, 'year' => $prevDate->year, 'usr' => $usr]) }}"
-                    class="btn btn-outline-primary btn-sm filter-btn px-3 py-2" style="min-height: 44px;">
+                    class="btn btn-outline-primary btn-sm filter-btn px-3 py-2 btn-touch">
                     <i class="fas fa-angle-double-left me-2"></i><span class="d-none d-sm-inline">Tanggal Sebelumnya</span><span class="d-sm-none">Sebelum</span>
                 </a>
 
                 <a href="{{ route('journal.show', ['class' => $grade, 'day' => $nextDate->day, 'month' => $nextDate->month, 'year' => $nextDate->year, 'usr' => $usr]) }}"
-                    class="btn btn-outline-primary btn-sm filter-btn px-3 py-2" style="min-height: 44px;">
+                    class="btn btn-outline-primary btn-sm filter-btn px-3 py-2 btn-touch">
                     <span class="d-none d-sm-inline">Tanggal Selanjutnya</span><span class="d-sm-none">Selanjut</span><i class="fas fa-angle-double-right ms-2"></i>
                 </a>
 
-                <div class="position-relative filter-btn" style="min-height: 44px;">
-                    <button type="button" id="btnCalendar" class="btn btn-outline-primary w-100 h-100 px-3 py-2 text-truncate" style="white-space: nowrap;">
+                <div class="position-relative filter-btn btn-touch">
+                    <button type="button" id="btnCalendar" class="btn btn-outline-primary w-100 h-100 px-3 py-2 text-truncate text-nowrap">
                         <i class="fas fa-calendar-alt me-2"></i>{{ $currentDate->translatedFormat('d M Y') }}
                     </button>
                     <input type="text" id="flatpickr-date" value="{{ sprintf('%04d-%02d-%02d', $year, $month, $day) }}"
-                        style="position:absolute; opacity:0; pointer-events:none; left:0; bottom:0; width:100%;">
+                        class="flatpickr-hidden">
                 </div>
             </div>
 
             <div class="filter-actions">
-                <button id="btnSave" class="btn btn-primary w-100" style="min-height: 44px;"><i data-feather="save" class="me-1"></i><span class="d-none d-sm-inline">Simpan</span></button>
+                <button id="btnSave" class="btn btn-primary w-100 btn-touch"><i data-feather="save" class="me-1"></i><span class="d-none d-sm-inline">Simpan</span></button>
 
                 @if (Auth::user()->is_admin)
                     <a href="{{ route('journal.export', [
@@ -1015,7 +1014,7 @@
                         'year' => $year,
                         'day' => $day,
                     ]) }}"
-                        class="btn btn-info w-100" style="min-height: 44px;">
+                        class="btn btn-info w-100 btn-touch">
                         <i data-feather="download" class="me-1"></i><span class="d-none d-sm-inline">Export Excel</span>
                     </a>
                 @endif
@@ -1055,16 +1054,16 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="table-wrapper" style="margin-bottom: 0;">
-                            <table class="teacher-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:160px">Mapel / Mata Pelajaran</th>
-                                        <th style="width:200px">Nama Guru</th>
-                                        <th>Materi KBM</th>
-                                        <th>Daftar Absen</th>
-                                    </tr>
-                                </thead>
+                    <div class="table-wrapper mb-0">
+                        <table class="teacher-table journal-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-mapel">Mapel / Mata Pelajaran</th>
+                                    <th class="col-guru">Nama Guru</th>
+                                    <th>Materi KBM</th>
+                                    <th>Daftar Absen</th>
+                                </tr>
+                            </thead>
 
                                 <tbody>
                                     @foreach ($teachers as $index => $t)
@@ -1099,18 +1098,16 @@
 
                                                 <div class="d-flex align-items-center justify-content-between gap-2">
                                                     @if ($canEditKbm)
-                                                        <a href="#" role="button" tabindex="0" class="kbm-link"
-                                                            style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}"
+                                                        <a href="#" role="button" tabindex="0" class="kbm-link note-link"
                                                             onclick="addKeterangan(this.closest('td')); event.preventDefault();">
                                                             @if ($note)
                                                                 {!! nl2br(e($note->note)) !!}
                                                             @else
-                                                                <i data-feather="edit-2" style="width: 16px; height: 16px; display: inline; vertical-align: -2px;"></i> Klik untuk tambah keterangan
+                                                                 <i data-feather="edit-2" class="feather-16" style="vertical-align: -2px;"></i> Klik untuk tambah keterangan
                                                             @endif
                                                         </a>
                                                     @else
-                                                        <div class="kbm-link disabled"
-                                                            style="color:{{ $note ? 'var(--info-color)' : 'var(--text-muted)' }}; cursor: default; background: transparent; border: none; padding: 0;">
+                                                        <div class="kbm-link disabled note-link">
                                                             @if ($note)
                                                                 {!! nl2br(e($note->note)) !!}
                                                             @else
@@ -1123,7 +1120,7 @@
 
                                             {{-- ====== KOLOM KETERANGAN (HANYA SEKALI) ====== --}}
                                             @if ($loop->first)
-                                                <td style="max-width: 300px; width: 300px; word-wrap: break-word;"
+                                                <td class="text-break w-300"
                                                     rowspan="{{ count($teachers) }}" id="rekapKeterangan">
                                                     <em class="text-muted">Tidak ada siswa absen</em>
                                                 </td>
@@ -1151,9 +1148,9 @@
                 </div>
                 <div class="collapsible-content">
                     <div class="collapsible-body">
-                        <div class="input-group me-auto mb-3" style="max-width: 300px;">
+                        <div class="input-group me-auto mb-3 max-w-300">
                             <span class="input-group-text bg-transparent border-end-0 text-muted">
-                                <i data-feather="search" style="width: 16px; height: 16px;"></i>
+                                <i data-feather="search" class="feather-16"></i>
                             </span>
                             <input type="text" id="searchStudent" class="form-control border-start-0 ps-0"
                                 placeholder="Cari nama siswa...">
@@ -1166,8 +1163,7 @@
                                     <tr>
                                         <th rowspan="2" class="col-no">No</th>
                                         <th rowspan="2" class="col-nama">Nama Siswa</th>
-                                        <th colspan="31" id="tgl"
-                                            style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.05)); color: #38bdf8; font-weight: 600;">
+                                        <th colspan="31" id="tgl" class="note-display">
                                             {{ \Carbon\Carbon::create($year, $month, 1)->translatedFormat('F Y') }}</th>
                                         <th rowspan="2" class="col-status-sum">S</th>
                                         <th rowspan="2" class="col-status-sum">I</th>
@@ -1179,7 +1175,7 @@
                                             $isCurrentMonthYear = $month == date('m') && $year == date('Y');
                                         @endphp
                                         @for ($i = 1; $i <= 31; $i++)
-                                            <th style="width: 35px;"
+                                            <th class="day-col-width"
                                                 class="{{ $isCurrentMonthYear && $i == $currentDay ? 'today-highlight' : '' }}">
                                                 {{ $i }}
                                             </th>
@@ -1196,8 +1192,7 @@
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td class="editable-cell {{ $isCurrentMonthYear && $i == $currentDay ? 'today-highlight' : '' }}"
                                                     data-student="{{ $student->id }}" data-day="{{ $i }}">
-                                                    <span
-                                                        style="display: inline-block; min-width: 20px;">{{ $attendance[$student->id][$i] ?? '' }}</span>
+                                                        <span class="cell-attendance">{{ $attendance[$student->id][$i] ?? '' }}</span>
                                                 </td>
                                             @endfor
 
@@ -1307,7 +1302,7 @@
                     valueChanged = true;
                     if (cell.contains(select)) {
                         cell.innerHTML =
-                            `<span style="display: inline-block; min-width: 20px;">${select.value}</span>`;
+                            `<span class="cell-attendance">${select.value}</span>`;
                         hasUnsaved = true;
                         Toast.fire({
                             icon: 'success',
@@ -1321,7 +1316,7 @@
                     // Only update if select is still in the cell AND no change event fired
                     if (cell.contains(select) && !valueChanged) {
                         cell.innerHTML =
-                            `<span style="display: inline-block; min-width: 20px;">${select.value}</span>`;
+                            `<span class="cell-attendance">${select.value}</span>`;
                     }
                 });
             });

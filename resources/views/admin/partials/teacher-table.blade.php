@@ -19,7 +19,7 @@
                 <td>{{ $i + 1 }}</td>
                 <td class="teacher-name">{{ $u->name }}</td>
                 <td class="teacher-email">{{ $u->email }}</td>
-                <td class="teacher-phone">{{ $u->phone_num ?? '-' }}</td>
+<td class="teacher-phone">{{ $u->phone_num ?? '-' }}</td>
                 <td>
                     @if (count($mapel) > 0)
                         @php
@@ -42,8 +42,7 @@
                         @endphp
                         <div class="d-flex flex-wrap gap-1">
                             @foreach ($displayData as $item)
-                                <span class="badge bg-soft-info text-info border border-info small"
-                                    style="font-size: 0.7rem;">
+                                    <span class="badge bg-soft-info text-info border border-info small text-xs">
                                     {{ $item['mapel'] }} ({{ $item['kelas'] }})
                                 </span>
                             @endforeach
@@ -52,9 +51,9 @@
                         <small class="text-muted italic">Belum diatur</small>
                     @endif
                 </td>
-                <td>
-                    <div class="d-flex gap-1">
-                        <button class="btn btn-info btn-sm"
+<td class="teacher-phone">
+                <div class="d-flex gap-1">
+                    <button class="btn btn-info btn-sm"
                             onclick='editTeacher({{ $u->id }}, "{{ $u->name }}", "{{ $u->email }}", "{{ $u->phone_num }}")'>
                             Edit Profil
                         </button>
@@ -72,8 +71,8 @@
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
-                    <i class="fas fa-inbox" style="font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 1rem;"></i>
+                <td colspan="5" class="text-center py-5 px-2 text-muted">
+                    <i class="fas fa-inbox fs-1 opacity-25 d-block mb-3"></i>
                     <p class="m-0">Belum ada data guru terdaftar</p>
                 </td>
             </tr>

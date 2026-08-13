@@ -1,0 +1,127 @@
+.explorer-container {
+    background-color: var(--bg-card) !important;
+    border-radius: var(--card-radius);
+    padding: 2.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    color: var(--text-main);
+}
+
+.table,
+.table tr,
+.table td,
+.table th {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table thead th {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-muted) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+    color: var(--primary-color) !important;
+}
+
+.table tbody td {
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+    vertical-align: middle;
+    padding: 0.75rem;
+}
+
+h1,
+h4 {
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.input-group-text {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.form-control,
+.form-select {
+    background-color: #0f172a !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #0f172a !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+}
+
+hr {
+    border-top: 1px solid var(--border-color);
+    opacity: 0.5;
+}
+
+a {
+    color: var(--info-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.btn-outline-secondary {
+    border-color: var(--border-color);
+    color: var(--text-muted);
+}
+
+.btn-outline-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+.folder-table,
+.file-table {
+    background: transparent !important;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+strong {
+    color: var(--text-main);
+}

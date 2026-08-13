@@ -19,416 +19,6 @@
 
 
 
-    <style>
-        :root {
-            --primary-color: #3b82f6;
-            --primary-hover: #2563eb;
-            --secondary-color: #94a3b8;
-            --success-color: #10b981;
-            --info-color: #0ea5e9;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-navbar: #1e293b;
-            --border-color: #334155;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-            --card-radius: 12px;
-
-            /* Aliases for better compatibility */
-            --accent-blue: var(--primary-color);
-            --accent-green: var(--success-color);
-            --accent-info: var(--info-color);
-            --accent-warning: var(--warning-color);
-            --text-dark: #f8fafc;
-        }
-
-        /* Semantic Soft Backgrounds adjusted for Dark Mode */
-        .bg-soft-primary {
-            background-color: rgba(59, 130, 246, 0.15) !important;
-            color: #60a5fa !important;
-        }
-
-        .bg-soft-success {
-            background-color: rgba(16, 185, 129, 0.15) !important;
-            color: #34d399 !important;
-        }
-
-        .bg-soft-info {
-            background-color: rgba(14, 165, 233, 0.15) !important;
-            color: #38bdf8 !important;
-        }
-
-        .bg-soft-warning {
-            background-color: rgba(245, 158, 11, 0.15) !important;
-            color: #fbbf24 !important;
-        }
-
-        .bg-soft-danger {
-            background-color: rgba(239, 68, 68, 0.15) !important;
-            color: #f87171 !important;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-        }
-
-        #app {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            flex: 1;
-        }
-
-        .navbar {
-            background-color: var(--bg-navbar) !important;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .navbar-brand {
-            font-weight: 800;
-            color: var(--primary-color) !important;
-            letter-spacing: -0.5px;
-            font-size: 1.25rem;
-        }
-
-        .nav-link {
-            font-weight: 600;
-            color: var(--text-muted) !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--primary-color) !important;
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-
-        .navbar-toggler-icon {
-            filter: brightness(100) invert(0);
-            /* Ensure pure white */
-        }
-
-        /* Only show X icon when the toggler is NOT collapsed (meaning it's open) */
-        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
-            filter: none !important;
-        }
-
-        .nav-link.active {
-            color: var(--primary-color) !important;
-            background-color: rgba(59, 130, 246, 0.15);
-        }
-
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card-header {
-            background-color: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1.25rem;
-            border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
-        }
-
-        .btn {
-            border-radius: 8px;
-            padding: 0.6rem 1.25rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .form-control,
-        .form-select {
-            background-color: #0f172a;
-            color: var(--text-main);
-            border-radius: 8px;
-            padding: 0.6rem 1rem;
-            border: 1.5px solid var(--border-color);
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            background-color: #0f172a;
-            color: var(--text-main);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .badge {
-            padding: 0.5em 0.75em;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        /* Utils */
-        .text-primary-bold {
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        .rounded-xl {
-            border-radius: 1rem !important;
-        }
-
-        /* Mobile Bottom Nav */
-        .mobile-bottom-nav {
-            display: flex;
-            align-items: center;
-            height: 70px;
-            background: var(--bg-navbar);
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
-            z-index: 1050;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .mobile-nav-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.7rem;
-            font-weight: 700;
-            gap: 4px;
-            transition: all 0.2s ease;
-            flex: 1;
-        }
-
-        .mobile-nav-link i {
-            font-size: 1.25rem;
-            transition: transform 0.2s ease;
-        }
-
-        .mobile-nav-link.active {
-            color: var(--primary-color);
-        }
-
-        .mobile-nav-link.active i {
-            transform: translateY(-2px);
-        }
-
-        /* Dropdown refinements */
-        .dropdown-menu {
-            margin-top: 0.5rem !important;
-            padding: 0.5rem;
-            background-color: var(--bg-card) !important;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
-            border: 1px solid var(--border-color) !important;
-            z-index: 2000;
-        }
-
-        .dropdown-item {
-            border-radius: 8px;
-            color: var(--text-muted) !important;
-            font-weight: 600;
-            padding: 0.6rem 1rem !important;
-            transition: all 0.2s ease;
-        }
-
-        .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            color: var(--primary-color) !important;
-        }
-
-        .dropdown-item.text-danger:hover {
-            background-color: rgba(239, 68, 68, 0.1) !important;
-            color: #f87171 !important;
-        }
-
-        @media (max-width: 767.98px) {
-            .navbar-brand {
-                margin-left: auto;
-                margin-right: auto;
-            }
-        }
-
-        /* User layout (non-admin) - flex column with fixed bottom nav */
-        .user-layout {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .user-layout #app {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .user-layout #main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 70px; /* space for fixed bottom nav */
-        }
-
-        .user-layout .mobile-bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: var(--bg-navbar);
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
-            z-index: 1050;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 767.98px) {
-            .user-layout .navbar-toggler {
-                display: none;
-            }
-        }
-
-        /* Prevent Dropdown Clipping */
-        .navbar-collapse {
-            overflow: visible !important;
-        }
-
-        .dropdown-menu {
-            display: none;
-            min-width: 200px;
-            padding: 0.5rem;
-            background-color: var(--bg-card) !important;
-            border: 1px solid var(--border-color) !important;
-            border-radius: var(--card-radius);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5) !important;
-            margin-top: 0.5rem !important;
-        }
-
-        .dropdown-menu.show {
-            display: block !important;
-            animation: dropdownFadeIn 0.2s ease-out;
-        }
-
-        @keyframes dropdownFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 0.7rem 1rem !important;
-            clear: both;
-            font-weight: 600;
-            color: var(--text-muted) !important;
-            text-align: inherit;
-            text-decoration: none;
-            white-space: nowrap;
-            background-color: transparent;
-            border: 0;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            gap: 10px;
-        }
-
-        .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            color: var(--primary-color) !important;
-        }
-
-        .dropdown-item i {
-            font-size: 1rem;
-        }
-
-        /* Dark Mode SweetAlert2 overrides */
-        .swal2-popup {
-            background-color: var(--bg-card) !important;
-            color: var(--text-main) !important;
-            border: 1px solid var(--border-color) !important;
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7) !important;
-            border-radius: 16px !important;
-        }
-
-        .swal2-title {
-            color: var(--text-main) !important;
-        }
-
-        .swal2-content,
-        .swal2-html-container {
-            color: var(--text-muted) !important;
-        }
-
-        .swal2-confirm.btn-danger {
-            background-color: var(--danger-color) !important;
-            border-color: var(--danger-color) !important;
-            box-shadow: none !important;
-        }
-
-        .swal2-cancel.btn-secondary {
-            background-color: transparent !important;
-            border-color: var(--secondary-color) !important;
-            color: var(--secondary-color) !important;
-            box-shadow: none !important;
-        }
-
-        .swal2-cancel.btn-secondary:hover {
-            color: var(--text-main) !important;
-            background-color: rgba(148, 163, 184, 0.1) !important;
-        }
-
-        .swal2-icon.swal2-warning {
-            border-color: var(--warning-color) !important;
-            color: var(--warning-color) !important;
-        }
-
-        .swal2-icon.swal2-error {
-            border-color: var(--danger-color) !important;
-            color: var(--danger-color) !important;
-        }
-
-        .swal2-icon.swal2-success {
-            border-color: var(--success-color) !important;
-            color: var(--success-color) !important;
-        }
-
-        width: 20px;
-        text-align: center;
-        }
-
-        .dropdown-item.text-danger:hover {
-            background-color: rgba(239, 68, 68, 0.1) !important;
-            color: #f87171 !important;
-        }
-    </style>
-
 </head>
 
 <body class="@auth @if (!Auth::user()->is_admin) user-layout @endif @endauth">
@@ -526,7 +116,7 @@
     @endphp
 
     <div id="app">
-        <nav class="navbar navbar-expand-md sticky-top navbar-dark">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                     <i class="fas fa-journal-whills me-2"></i>
@@ -566,8 +156,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ Request::is('admin') ? 'active' : '' }}"
-                                        href="{{ url('/admin') }}">
+                                    <a class="nav-link {{ Request::is('/') ? 'active' : '' }}"
+                                        href="{{ url('/') }}">
                                         <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                                     </a>
                                 </li>
@@ -601,12 +191,6 @@
                                         <i class="fas fa-database me-1"></i> Backup
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {{ Request::is('explorer*') ? 'active' : '' }}"
-                                        href="{{ url('/explorer') }}">
-                                        <i class="fas fa-folder-open me-1"></i> Explorer
-                                    </a>
-                                </li>
                             @endif
                         @endauth
                     </ul>
@@ -620,11 +204,9 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center"
-                                    href="javascript:void(0)" role="button"
-                                    onclick="const m = this.nextElementSibling; const isS = m.classList.contains('show'); document.querySelectorAll('.dropdown-menu.show').forEach(el => el.classList.remove('show')); if(!isS) m.classList.add('show'); event.stopPropagation();">
-                                    <div class="bg-soft-primary rounded-circle d-flex align-items-center justify-content-center me-2"
-                                        style="width: 32px; height: 32px;">
-                                        <i class="fas fa-user text-primary" style="font-size: 0.8rem;"></i>
+                                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="nav-user-avatar me-2">
+                                        <i class="fas fa-user"></i>
                                     </div>
                                     <span class="fw-bold">{{ Auth::user()->name }}</span>
                                 </a>
@@ -652,7 +234,7 @@
             @csrf
         </form>
 
-        <main id="main-content" class="flex-fill" style="background-color: var(--bg-body);">
+        <main id="main-content" class="flex-fill">
             @yield('content')
         </main>
 

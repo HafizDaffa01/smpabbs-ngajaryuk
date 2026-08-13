@@ -51,8 +51,8 @@
                 <div class="card card-modern">
                     <div id="map" class="map-container"></div>
                     <input type="hidden" id="lokasi" name="lokasi" required>
-                    <input type="text" id="alamat" name="alamat" class="form-control" placeholder="Lokasi akan muncul di sini" readonly required onclick="showLokasiPopup()" style="cursor: pointer;">
-                    <input type="text" id="lokasi_dms" class="form-control mt-2 lokasi-dms-field" placeholder="Koordinat (DMS)" readonly onclick="showLokasiPopup()" style="cursor: pointer;">
+                    <input type="text" id="alamat" name="alamat" class="form-control cursor-pointer" placeholder="Lokasi akan muncul di sini" readonly required onclick="showLokasiPopup()">
+                    <input type="text" id="lokasi_dms" class="form-control mt-2 lokasi-dms-field cursor-pointer" placeholder="Koordinat (DMS)" readonly onclick="showLokasiPopup()">
                 </div>
             </div>
 
@@ -63,9 +63,9 @@
                 </label>
                 <div class="card card-modern">
                     <video id="cameraStream" autoplay muted playsinline class="camera-feed"></video>
-                    <canvas id="cameraCanvas" style="display:none;"></canvas>
+                    <canvas id="cameraCanvas" class="d-none"></canvas>
                     <input type="hidden" id="foto" name="foto" required>
-                    <img id="previewFoto" src="" alt="Preview Foto" class="photo-preview" style="display:none;" onclick="showImagePopup()">
+                    <img id="previewFoto" src="" alt="Preview Foto" class="photo-preview d-none" onclick="showImagePopup()">
                 </div>
             </div>
 
@@ -90,263 +90,6 @@
 <div id="notification-container"></div>
 
 <style>
-/* ===== RESPONSIVE CONTAINER ===== */
-.attendance-container {
-    display: flex;
-    justify-content: center;
-    background: var(--bg-body);
-    padding: 15px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    width: 100%;
-}
-
-.attendance-card {
-    width: 100%;
-    max-width: 450px;
-    background: var(--bg-card);
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
-    animation: slideUp 0.3s ease-out;
-    border: 1px solid var(--border-color);
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ===== HEADER ===== */
-.attendance-header {
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--text-main);
-    padding: 30px 20px;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.header-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.clock-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.clock-section i {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    opacity: 0.8;
-}
-
-.time-display {
-    text-align: left;
-}
-
-.clock-text {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    line-height: 1;
-    color: var(--text-main);
-}
-
-.date-text {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 5px;
-}
-
-/* ===== GREETING ===== */
-.greeting-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.greeting-section i {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-}
-
-.greeting-section h4 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-/* ===== FORM SECTION ===== */
-#absensiForm {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.form-label {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-main);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 5px;
-}
-
-.form-label i {
-    color: var(--primary-color);
-    font-size: 1.1rem;
-}
-
-.form-control {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    background: #0f172a;
-    color: var(--text-main);
-}
-
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    outline: none;
-    background: #0f172a;
-    color: var(--text-main);
-}
-
-.form-control-lg {
-    min-height: 45px;
-    font-size: 1rem;
-}
-
-/* ===== CARD MODERN ===== */
-.card-modern {
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    background: #0f172a;
-}
-
-.map-container {
-    width: 100%;
-    height: 200px;
-    background: #0f172a;
-    border-radius: 8px;
-}
-
-.camera-feed {
-    width: 100%;
-    height: 240px;
-    background: #1F2937;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-.photo-preview {
-    width: 100%;
-    height: 240px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-/* ===== BUTTONS ===== */
-.buttons-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin: 10px 0;
-}
-
-.btn {
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.btn-lg {
-    padding: 14px 20px;
-    font-size: 1rem;
-}
-
-.btn-primary {
-    background: var(--primary-color);
-    color: white;
-    border: 1px solid var(--primary-color);
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
-    border-color: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
-.btn-secondary {
-    background: #475569;
-    color: white;
-    border: 1px solid #475569;
-}
-
-.btn-secondary:hover {
-    background: #334155;
-    border-color: #334155;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
-}
-
-.btn-success {
-    background: var(--success-color);
-    color: white;
-    border: 1px solid var(--success-color);
-}
-
-.btn-success:hover {
-    background: #059669;
-    border-color: #059669;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-}
-
-.btn-icon i {
-    font-size: 1.1rem;
-}
-
-.w-100 {
-    width: 100%;
-}
-
 /* ===== NOTIFICATION ===== */
 #notification-container {
     position: fixed;
@@ -406,107 +149,7 @@
     content: '\f071';
 }
 
-/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 480px) {
-    .attendance-container {
-        padding: 4px;
-        min-height: auto;
-    }
-
-    .attendance-card {
-        max-width: 100%;
-        border-radius: 10px;
-    }
-
-    .attendance-header {
-        padding: 7px 10px;
-    }
-
-    .clock-section {
-        gap: 8px;
-    }
-
-    .clock-section i {
-        font-size: 1.44rem;
-    }
-
-    .clock-text {
-        font-size: 1.24rem;
-    }
-
-    .date-text {
-        font-size: 0.64rem;
-        margin-top: 1px;
-    }
-
-    .greeting-section {
-        padding: 5px 10px;
-    }
-
-    .greeting-section i {
-        font-size: 0.94rem;
-    }
-
-    .greeting-section h4 {
-        font-size: 0.84rem;
-    }
-
-    #absensiForm {
-        padding: 8px;
-        gap: 6px;
-    }
-
-    .form-section {
-        gap: 2px;
-    }
-
-    .form-label {
-        font-size: 0.77rem;
-        margin-bottom: 0;
-    }
-
-    .form-control {
-        padding: 6px 8px;
-        font-size: 0.81rem;
-    }
-
-    .form-control-lg {
-        min-height: 34px;
-        font-size: 0.86rem;
-    }
-
-    .map-container {
-        height: 99px;
-    }
-
-    .camera-feed,
-    .photo-preview {
-        height: 149px;
-    }
-
-    .buttons-container {
-        gap: 6px;
-        margin: 0;
-    }
-
-    .btn {
-        padding: 7px 7px;
-        font-size: 0.76rem;
-    }
-
-    .btn-lg {
-        padding: 8px 9px;
-        font-size: 0.81rem;
-    }
-
-    .btn-icon i {
-        font-size: 0.86rem;
-    }
-
-    .lokasi-dms-field {
-        display: none;
-    }
-
     #notification-container {
         top: 4px;
         right: 4px;
@@ -517,6 +160,9 @@
         min-width: auto;
         width: 100%;
         padding: 6px 8px;
+    }
+}
+</style>
         font-size: 0.77rem;
     }
 }
@@ -802,10 +448,10 @@ function showLokasiPopup() {
         Swal.fire({
             title: 'Detail Lokasi Anda',
             html: `
-                <p style="text-align:left; margin-bottom:10px;">
+                <p class="text-start mb-2">
                     <strong>Alamat:</strong><br>${alamat}<br><br>
                     <strong>Koordinat (DMS):</strong><br>${lokasiDMS}<br><br>
-                    <div id="popupMap" style="width:100%; height:300px; border:1px solid #ccc; border-radius:6px;"></div>
+                    <div id="popupMap" class="map-container"></div>
                 </p>
             `,
             width: 600,

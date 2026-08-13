@@ -84,6 +84,24 @@
             border: 1px solid #90caf9;
             margin-top: 20px;
         }
+
+        .month-header { margin-bottom: 10px; font-weight: bold; font-size: 12px; }
+        .summary-table { margin-top: 10px; }
+        .day-disabled { background: #eee; }
+        .text-success-dark { color: #28a745; }
+        .text-warning-dark { color: #ffc107; }
+        .text-danger-dark { color: #dc3545; }
+        .col-no { width: 40px; }
+        .col-name { text-align: left; padding-left: 10px; width: 60%; }
+        .col-s { width: 80px; }
+        .col-i { width: 80px; }
+        .col-a { width: 80px; }
+        .col-total { width: 100px; background: #e3f2fd; color: #0056b3; }
+        .name-cell { text-align: left; padding-left: 10px; font-weight: bold; }
+        .stat-s { font-size: 11px; color: #28a745; font-weight: bold; }
+        .stat-i { font-size: 11px; color: #d39e00; font-weight: bold; }
+        .stat-a { font-size: 11px; color: #dc3545; font-weight: bold; }
+        .stat-total { font-size: 12px; font-weight: bold; background: #f0f7ff; color: #0056b3; }
     </style>
 </head>
 <body>
@@ -111,21 +129,21 @@
             $daysInMonth = $carbonMonth->daysInMonth;
         @endphp
 
-        <div style="margin-bottom: 10px; font-weight: bold; font-size: 12px;">
+        <div class="month-header">
             MONTH: {{ strtoupper($carbonMonth->translatedFormat('F Y')) }}
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th class="no-col">NO</th>
-                    <th class="name-col">STUDENT NAME</th>
-                    @for ($d = 1; $d <= 31; $d++)
-                        <th class="day-col" @if($d > $daysInMonth) style="background:#eee;" @endif>{{ $d }}</th>
-                    @endfor
-                    <th class="stat-col" style="color: #28a745;">S</th>
-                    <th class="stat-col" style="color: #ffc107;">I</th>
-                    <th class="stat-col" style="color: #dc3545;">A</th>
+                        <th class="no-col">NO</th>
+                        <th class="name-col">STUDENT NAME</th>
+                        @for ($d = 1; $d <= 31; $d++)
+                            <th class="day-col day-disabled" @if($d > $daysInMonth) @endif>{{ $d }}</th>
+                        @endfor
+                        <th class="stat-col text-success-dark">S</th>
+                        <th class="stat-col text-warning-dark">I</th>
+                        <th class="stat-col text-danger-dark">A</th>
                 </tr>
             </thead>
             <tbody>
@@ -141,7 +159,7 @@
                                 elseif ($val == 'I') $class = 'status-i';
                                 elseif ($val == 'A') $class = 'status-a';
                             @endphp
-                            <td class="day-col {{ $class }}" @if($d > $daysInMonth) style="background:#f9f9f9;" @endif>
+                            <td class="day-col day-disabled" @if($d > $daysInMonth) @endif>
                                 {{ $val }}
                             </td>
                         @endfor
@@ -174,15 +192,15 @@
         <div class="summary-header">
             SEMESTER {{ $semester }} ATTENDANCE SUMMARY (ACADEMIC YEAR {{ $academicYear }})
         </div>
-        <table style="margin-top: 10px;">
+        <table class="summary-table">
             <thead>
                 <tr>
-                    <th style="width: 40px;">NO</th>
-                    <th style="text-align: left; padding-left: 10px; width: 60%; auto;">STUDENT NAME</th>
-                    <th style="width: 80px; color: #28a745;">TOTAL S</th>
-                    <th style="width: 80px; color: #ffc107;">TOTAL I</th>
-                    <th style="width: 80px; color: #dc3545;">TOTAL A</th>
-                    <th style="width: 100px; background: #e3f2fd; color: #0056b3;">TOTAL ABSENT</th>
+                    <th class="col-no">NO</th>
+                    <th class="col-name">STUDENT NAME</th>
+                    <th class="col-s text-success-dark">TOTAL S</th>
+                    <th class="col-i text-warning-dark">TOTAL I</th>
+                    <th class="col-a text-danger-dark">TOTAL A</th>
+                    <th class="col-total">TOTAL ABSENT</th>
                 </tr>
             </thead>
             <tbody>
@@ -195,11 +213,11 @@
                     @endphp
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td style="text-align: left; padding-left: 10px; font-weight: bold;">{{ $student->name }}</td>
-                        <td style="font-size: 11px; color: #28a745; font-weight: bold;">{{ $sS }} Days</td>
-                        <td style="font-size: 11px; color: #d39e00; font-weight: bold;">{{ $sI }} Days</td>
-                        <td style="font-size: 11px; color: #dc3545; font-weight: bold;">{{ $sA }} Days</td>
-                        <td style="font-size: 12px; font-weight: bold; background: #f0f7ff; color: #0056b3;">{{ $total }} Days</td>
+                        <td class="name-cell">{{ $student->name }}</td>
+                        <td class="stat-s">{{ $sS }} Days</td>
+                        <td class="stat-i">{{ $sI }} Days</td>
+                        <td class="stat-a">{{ $sA }} Days</td>
+                        <td class="stat-total">{{ $total }} Days</td>
                     </tr>
                 @endforeach
             </tbody>

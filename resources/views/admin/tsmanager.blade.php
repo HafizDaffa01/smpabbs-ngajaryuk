@@ -4,219 +4,7 @@
 
 @section('content')
 
-    <style>
-        /* ===============================
-                                                            GLOBAL DARK FORM STYLE
-                                                        =============================== */
-
-        input,
-        select,
-        textarea {
-            background: #0f172a !important;
-            color: #fff !important;
-            border: 1px solid var(--border-color) !important;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            background: #1e293b !important;
-            border-color: var(--primary-color) !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
-            outline: none !important;
-        }
-
-        option {
-            background: #1e293b !important;
-            color: #fff !important;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            color: rgba(255, 255, 255, 0.5) !important;
-            opacity: 1;
-        }
-
-        .form-label,
-        label,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            color: #ffffff !important;
-        }
-
-        /* ===============================
-                                                                   TAB STYLE
-                                                                =============================== */
-
-        .tab-header {
-            display: flex;
-            gap: 8px;
-            margin-bottom: -1px;
-        }
-
-        .tab-button {
-            padding: 0.85rem 2rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-bottom: none;
-            border-radius: 12px 12px 0 0;
-            cursor: pointer;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.6);
-            transition: 0.2s ease;
-        }
-
-        .tab-button.active {
-            background: var(--bg-card);
-            color: #fff !important;
-            border-top: 4px solid #3b82f6;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 0 0 12px 12px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* ===============================
-                                                                   PANEL & CONTAINERS
-                                                                =============================== */
-
-        .panel.card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .student-list-container {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .kelas-delete-container {
-            text-align: left;
-            max-height: 300px;
-            overflow: auto;
-        }
-
-        #tableContainer {
-            max-height: 450px;
-            overflow-y: auto;
-        }
-
-        /* ===============================
-                                                TABLE
-                                            =============================== */
-
-        .ts-table {
-            width: 100%;
-            border-collapse: collapse;
-            color: #fff;
-        }
-
-        .ts-table th {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            font-weight: 800;
-            border-bottom: 2px solid var(--border-color);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-        }
-
-        .ts-table td {
-            padding: 0.9rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .ts-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        /* ===============================
-                                                                   UTILITIES
-                                                                =============================== */
-
-        .section-divider {
-            margin: 1.5rem 0;
-            border-top: 2px solid var(--border-color);
-            opacity: 0.3;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: var(--primary-color);
-            margin-right: 10px;
-            border-radius: 2px;
-        }
-
-        .m-0 {
-            margin: 0 !important;
-        }
-
-        .text-left {
-            text-align: left !important;
-        }
-
-        .captcha-display {
-            user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            pointer-events: none;
-            letter-spacing: 4px;
-            color: var(--text-main);
-        }
-
-        .mapel-select-w {
-            width: 150px !important;
-        }
-
-        .mapel-type-w {
-            width: 200px !important;
-        }
-
-        .mapel-row {
-            margin-bottom: 0.5rem;
-        }
-
-        .pw-wrapper {
-            position: relative;
-        }
-
-        .pw-wrapper input {
-            padding-right: 45px;
-        }
-
-        .pw-wrapper i,
-        .pw-wrapper svg {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-        }
-    </style>
-
-    <div class="container pb-5">
+<div class="container pb-5">
         <div class="d-flex align-items-center mb-4">
             <h1 class="h3 fw-800 m-0 text-uppercase tracking-tight">
                 <i class="fas fa-users-cog me-2"></i>TS Manager
@@ -240,8 +28,7 @@
                     <h2 class="m-0">Student Manager</h2>
                     <div>
                         <button id="saveStudentChanges" class="btn btn-success">Save Changes</button>
-                        <span id="pendingCount" class="badge bg-soft-warning text-warning ms-2"
-                            style="display:none;">0</span>
+                        <span id="pendingCount" class="badge bg-soft-warning text-warning ms-2 d-none">0</span>
                         <button class="btn btn-danger ms-2" onclick="deleteStudentsByClass()">
                             Hapus Siswa (Per Kelas)
                         </button>
@@ -263,7 +50,7 @@
                 </select>
 
                 <div id="studentList" class="student-list-container">
-                    <p class="text-white">Daftar siswa akan muncul di sini...</p>
+                    <p class="text-muted">Daftar siswa akan muncul di sini...</p>
                 </div>
             </div>
 
@@ -345,7 +132,7 @@
                                 <div class="pw-wrapper">
                                     <input type="password" name="password" id="inputPw" class="form-control" required
                                         placeholder="Password" minlength="6">
-                                    <i data-feather="eye" style="color: #fff;" id="pwEye" onclick="showPw()"></i>
+                                    <i data-feather="eye" class="text-white" id="pwEye" onclick="showPw()"></i>
                                 </div>
                             </div>
 
@@ -383,6 +170,8 @@
             </div>
         </div>
     </div>
+
+    <script>
         // ==========================================
         //  GLOBAL / UTILITY
         // ==========================================
@@ -563,8 +352,8 @@
         function renderStudents(list) {
             if (list.length === 0) {
                 studentList.innerHTML = `
-                    <div class="text-center py-5" style="color: var(--text-muted); opacity: 0.7;">
-                        <i class="fas fa-user-slash mb-3" style="font-size: 3rem;"></i>
+                    <div class="text-center py-5 text-muted opacity-75">
+                        <i class="fas fa-user-slash mb-3 icon-xl"></i>
                         <p>Belum ada data siswa di kelas ini</p>
                     </div>
                 `;

@@ -6,3 +6,11 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+// Custom layers
+@import 'base';
+@import 'layouts';
+@import 'auth';
+@import 'components';
+@import 'utilities';
+@import 'explorer';

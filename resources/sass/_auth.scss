@@ -1,0 +1,358 @@
+// ==========================================
+// AUTH PAGES
+// ==========================================
+
+// ----- Auth Page Container -----
+.login-box {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  background: $bg-card;
+  border-radius: $radius-2xl;
+  box-shadow: $shadow-xl;
+  overflow: hidden;
+  min-height: 580px;
+  border: 1px solid $border-color;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    max-width: 450px;
+    min-height: auto;
+  }
+}
+
+// ----- Hero Side (Branding) -----
+.login-hero {
+  flex: 1;
+  background: linear-gradient(135deg, $primary 0%, $primary-hover 100%);
+  padding: $spacer-10 $spacer-8;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: $radius-full;
+    top: -100px;
+    left: -100px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: $radius-full;
+    bottom: -50px;
+    right: -50px;
+  }
+
+  @media (max-width: 768px) {
+    padding: $spacer-6 $spacer-5;
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-logo-box {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: $radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto $spacer-8;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+  img {
+    width: 70px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+  }
+
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+    margin-bottom: $spacer-5;
+
+    img {
+      width: 55px;
+    }
+  }
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: $spacer-4;
+  letter-spacing: -0.02em;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.hero-desc {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 500;
+  max-width: 280px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
+}
+
+// ----- Form Side -----
+.login-form-area {
+  flex: 1;
+  padding: $spacer-10 $spacer-8;
+  background: $bg-card;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: $spacer-6 $spacer-5;
+  }
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: $text-heading;
+  margin-bottom: $spacer-2;
+}
+
+.form-subtitle {
+  color: $text-muted;
+  margin-bottom: $spacer-6;
+  font-weight: 500;
+}
+
+.form-group {
+  margin-bottom: $spacer-5;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $dark-300;
+  margin-bottom: $spacer-2;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  padding-left: 2.75rem;
+  border-radius: $radius-lg;
+  border: 2px solid $border-color;
+  background: $bg-body;
+  transition: all $transition-base;
+  font-size: $font-size-base;
+  color: $text-main;
+  font-weight: 500;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    background: $bg-body;
+    box-shadow: 0 0 0 4px rgba($primary, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.8rem 1rem;
+    padding-left: 2.75rem;
+    font-size: 1rem; // prevent iOS zoom
+  }
+}
+
+select.form-input {
+  padding-left: 2.75rem !important;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $dark-500;
+  font-size: 1rem;
+  transition: color $transition-base;
+}
+
+.form-input:focus + .input-icon {
+  color: $primary;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: $dark-500;
+  cursor: pointer;
+  padding: 0;
+  transition: color $transition-base;
+
+  &:hover {
+    color: $text-heading;
+  }
+}
+
+.form-extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacer-6;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: $spacer-2;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text-muted;
+  cursor: pointer;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: $spacer-4;
+  background: linear-gradient(135deg, $primary 0%, $primary-hover 100%);
+  border: none;
+  border-radius: $radius-lg;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all $transition-slow;
+  box-shadow: 0 10px 15px -3px rgba($primary, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacer-2;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba($primary, 0.5);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    padding: $spacer-3;
+    font-size: 1rem;
+  }
+}
+
+// ----- Alerts -----
+.alert-danger-custom {
+  background: rgba($danger, 0.1);
+  color: $danger-soft-text;
+  padding: $spacer-4;
+  border-radius: $radius-lg;
+  margin-bottom: $spacer-5;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba($danger, 0.2);
+  display: flex;
+  align-items: center;
+  gap: $spacer-2;
+}
+
+.alert-success-custom {
+  background: rgba($success, 0.1);
+  color: $success-soft-text;
+  padding: $spacer-4;
+  border-radius: $radius-lg;
+  margin-bottom: $spacer-5;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba($success, 0.2);
+  display: flex;
+  align-items: center;
+  gap: $spacer-2;
+}
+
+.alert-info-custom {
+  background: rgba($info, 0.1);
+  color: $info-soft-text;
+  padding: $spacer-4;
+  border-radius: $radius-lg;
+  margin-bottom: $spacer-5;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba($info, 0.2);
+  display: flex;
+  align-items: center;
+  gap: $spacer-2;
+}
+
+// ----- Footer -----
+.login-foot {
+  margin-top: $spacer-6;
+  text-align: center;
+  color: $dark-500;
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  a {
+    color: $primary;
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: $spacer-5;
+    font-size: 0.8rem;
+  }
+}
+
+// ----- Verification Message -----
+.verification-message {
+  background: rgba($dark-50, 0.03);
+  border: 1px solid $border-color;
+  padding: $spacer-5;
+  border-radius: $radius-lg;
+  color: $text-main;
+  margin-bottom: $spacer-5;
+  line-height: 1.6;
+}
+
+// ----- Build Version -----
+.build-version {
+  font-size: 0.65rem;
+  color: $text-muted;
+  opacity: 0.5;
+  margin-top: $spacer-4;
+  text-align: center;
+  letter-spacing: 0.05em;
+  font-family: monospace;
+}

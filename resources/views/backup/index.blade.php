@@ -20,7 +20,7 @@
                     <div class="col d-flex gap-2 flex-wrap">
 
                         {{-- Bulan --}}
-                        <div style="min-width:140px">
+                        <div class="flex-shrink-0 min-w-140">
                             <label class="form-label small text-muted mb-1">
                                 <i class="far fa-calendar me-1"></i>Bulan
                             </label>
@@ -35,7 +35,7 @@
                         </div>
 
                         {{-- Tahun --}}
-                        <div style="min-width:140px">
+                        <div class="flex-shrink-0 min-w-140">
                             <label class="form-label small text-muted mb-1">
                                 <i class="far fa-calendar-alt me-1"></i>Tahun
                             </label>
@@ -50,7 +50,7 @@
                         </div>
 
                         {{-- Tipe Data --}}
-                        <div style="min-width:140px">
+                        <div class="flex-shrink-0 min-w-140">
                             <label class="form-label small text-muted mb-1">
                                 <i class="fas fa-filter me-1"></i>Tipe Data
                             </label>
@@ -63,7 +63,7 @@
                         </div>
 
                         {{-- Search --}}
-                        <div style="min-width:180px">
+                        <div class="flex-shrink-0 min-w-180">
                             <label class="form-label small text-muted mb-1">
                                 <i class="fas fa-search me-1"></i>Pencarian
                             </label>
@@ -99,7 +99,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 <span class="text-muted">Auto Save:</span>
                                 <div class="form-check form-switch mb-0">
-                                    <input class="form-check-input" type="checkbox" id="autoSave" style="cursor:pointer">
+                                    <input class="form-check-input cursor-pointer" type="checkbox" id="autoSave">
                                 </div>
                             </div>
 
@@ -118,7 +118,7 @@
             @if ($dataType === 'waktu' && isset($days) && isset($gridData))
                 <div class="card shadow-sm">
                     <div class="card-body p-0">
-                        <div style="overflow-x:auto; max-width:100%;" class="table-wrapper">
+                        <div class="table-wrapper overflow-auto">
                             <table class="table table-hover table-bordered align-middle text-center mb-0">
                                 <thead>
                                     <tr>
@@ -137,7 +137,7 @@
                                         @foreach ($days as $d)
                                             <th class="sticky-header small">
                                                 {{ $d->format('d') }}
-                                                <div style="font-size:9px; font-weight:normal;">
+                                                <div class="text-xs fw-normal">
                                                     {{ substr($d->translatedFormat('D'), 0, 3) }}
                                                 </div>
                                             </th>
@@ -162,7 +162,7 @@
                                                     }
                                                 @endphp
                                                 <td data-date="{{ $tgl }}" onclick="enableEdit(this)"
-                                                    class="cell-editable date-col" style="cursor:pointer;">
+                                                    class="cell-editable date-col cursor-pointer">
                                                     {{ $val }}
                                                 </td>
                                             @endforeach
@@ -184,7 +184,7 @@
             <div id="table-container">
                 <div class="card shadow-sm">
                     <div class="card-body p-0">
-                        <div style="overflow-x:auto; max-width:100%;" class="table-wrapper">
+                        <div class="table-wrapper overflow-auto">
                             <table class="table table-hover table-bordered align-middle text-center mb-0">
                                 <thead>
                                     <tr>
@@ -200,7 +200,7 @@
                                         @foreach ($days as $d)
                                             <th class="sticky-header small date-col">
                                                 {{ $d->format('d') }}
-                                                <div style="font-size:9px; font-weight:normal;">
+                                                <div class="text-xs fw-normal">
                                                     {{ substr($d->translatedFormat('D'), 0, 3) }}
                                                 </div>
                                             </th>
@@ -273,7 +273,7 @@
             <div id="table-container">
                 <div class="card shadow-sm">
                     <div class="card-body p-0">
-                        <div style="overflow-x:auto; max-width:100%;" class="table-wrapper">
+                        <div class="table-wrapper overflow-auto">
                             <table class="table table-hover table-bordered align-middle text-center mb-0">
                                 <thead>
                                     <tr>
@@ -289,7 +289,7 @@
                                         @foreach ($days as $d)
                                             <th class="sticky-header small date-col">
                                                 {{ $d->format('d') }}
-                                                <div style="font-size:9px; font-weight:normal;">
+                                                <div class="text-xs fw-normal">
                                                     {{ substr($d->translatedFormat('D'), 0, 3) }}
                                                 </div>
                                             </th>
@@ -661,7 +661,7 @@
             <div class="text-start">
                 <p class="mb-2"><i class="far fa-clock text-primary"></i> <b>Waktu:</b> ${waktu}</p>
                 <p class="mb-3"><i class="fas fa-map-marker-alt text-danger"></i> <b>Alamat:</b> ${alamat}</p>
-                <div id="mapPrev" style="width:100%;height:350px;border-radius:8px;"></div>
+                <div id="mapPrev" class="map-popup"></div>
             </div>
         `,
                 didOpen: () => {
@@ -944,8 +944,8 @@
                 title: '<i class="fas fa-shield-alt"></i> Verifikasi CAPTCHA',
                 html: `
             <p class="mb-3">Masukkan kode berikut untuk melanjutkan:</p>
-            <div class="p-3 rounded mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);">
-                <b style="font-size: 28px; letter-spacing: 4px; user-select: none; font-family: monospace;">
+            <div class="p-3 rounded mb-3 captcha-box">
+                <b class="captcha-display">
                     ${captchaCode}
                 </b>
             </div>
@@ -1001,8 +1001,8 @@
                         <input type="text" id="deletePeriodPicker" class="form-control" placeholder="Pilih Bulan & Tahun..">
                     </div>
                     <div class="form-check form-switch text-start mb-3">
-                        <input class="form-check-input" type="checkbox" id="deleteWithImage" style="cursor:pointer">
-                        <label class="form-check-label ps-2" for="deleteWithImage" style="cursor:pointer">
+                        <input class="form-check-input cursor-pointer" type="checkbox" id="deleteWithImage">
+                        <label class="form-check-label ps-2 cursor-pointer" for="deleteWithImage">
                             Ikut hapus file gambar fisik?
                         </label>
                     </div>

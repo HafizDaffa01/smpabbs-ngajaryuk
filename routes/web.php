@@ -2,18 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AbsensiController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\BackupController;
-use App\Http\Controllers\JournalController;
+use App\Http\Controllers\Teacher\AbsensiController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BackupController;
+use App\Http\Controllers\Teacher\JournalController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
-use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\ImportController;
-use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\PdfController;
-use App\Http\Controllers\FileManagerController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Admin\ImportController;
+use App\Http\Controllers\Admin\FileManagerController;
+use App\Http\Controllers\Teacher\ScheduleController;
+use App\Http\Controllers\Admin\PdfController;
+use App\Http\Controllers\Teacher\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,13 +21,16 @@ use App\Http\Controllers\ProfileController;
 |--------------------------------------------------------------------------
 */
 
-// Root → cek login & role
+// Root → home page (different for admin and user)
 Route::get('/', function () {
     if (!Auth::check()) {
-        return redirect('/login'); // belum login → ke login
+        return redirect('/login');
     }
-    return Auth::user()->is_admin ? redirect('/admin') : redirect('/absensi');
-});
+    if (Auth::user()->is_admin) {
+        return app(\App\Http\Controllers\Admin\AdminController::class)->index();
+    }
+    return view('home');
+})->name('home');
 
 // Auth routes (login/register) with rate limiting
 Route::middleware(['throttle:auth'])->group(function () {
@@ -63,6 +66,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 });
 
+// Admin dashboard redirects to home (admin home is at /)
+Route::get('/admin', function () {
+    return redirect('/');
+})->name('admin.home');
+
+// Admin-only: preview teacher home page
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dev/layouts/user', function () {
+        return view('home');
+    })->name('admin.huser');
+});
+
 // Import routes (accessible without admin middleware)
 Route::get('/admin/import', [AdminController::class, 'importPage'])->name('admin.import');
 Route::post('/import-students', [ImportController::class, 'import'])->name('import.students');
@@ -86,17 +101,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/export-waktu', 'exportWaktu')->name('backup.exportWaktu');
         Route::get('/export-lokasi', 'exportLokasi')->name('backup.exportLokasi');
     });
-});
 
-// Schedule Management
-Route::prefix('schedule')->controller(ScheduleController::class)->group(function () {
-    Route::get('/', 'index')->name('schedule.index');
-    Route::post('/import', 'import')->name('schedule.import');
-    Route::post('/preview', 'preview')->name('schedule.preview');
-});
-
-// Admin-only routes
-Route::middleware(['auth', 'admin'])->group(function () {
+    // File Manager / Explorer
     Route::prefix('explorer')->controller(FileManagerController::class)->group(function () {
         Route::get('/', 'index')->name('explorer.index');
         Route::post('/folder', 'createFolder')->name('explorer.folder');
@@ -105,6 +111,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::delete('/delete-file', 'deleteFile')->name('explorer.deleteFile');
         Route::delete('/delete-folder', 'deleteFolder')->name('explorer.deleteFolder');
     });
+});
+
+// Schedule Management
+Route::prefix('schedule')->controller(ScheduleController::class)->group(function () {
+    Route::get('/', 'index')->name('schedule.index');
+    Route::post('/import', 'import')->name('schedule.import');
+    Route::post('/preview', 'preview')->name('schedule.preview');
 });
 
 // User routes (harus login)

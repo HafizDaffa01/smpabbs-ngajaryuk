@@ -15,11 +15,13 @@
 /.vscode
 /.zed
 /kilo
+/.kilo
 /auth.json
 /node_modules
 /public/build
 /public/hot
 /public/storage
+/public/.user.ini
 /storage/*.key
 /storage/pail
 /storage/logs/*.log

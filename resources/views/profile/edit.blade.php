@@ -6,15 +6,13 @@
 <div class="container pb-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card border-0 shadow-2xl rounded-2xl overflow-hidden" style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05) !important;">
-                <div class="card-header border-0 py-5 text-center position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);">
-                    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 50%); pointer-events: none;"></div>
-                    
+            <div class="card profile-card">
+                <div class="card-header border-0 py-5 text-center position-relative overflow-hidden">
                     <div class="mb-3 d-inline-block position-relative">
-                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg mx-auto" style="width: 80px; height: 80px; border: 4px solid var(--bg-card);">
-                            <i class="fas fa-user-edit text-white" style="font-size: 2rem;"></i>
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-edit"></i>
+                            <div class="avatar-status"></div>
                         </div>
-                        <div class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-white" style="width: 18px; height: 18px; border-width: 3px !important;"></div>
                     </div>
                     
                     <h3 class="mb-1 fw-bold text-white">Edit Profil</h3>
@@ -43,7 +41,7 @@
                                 </div>
                                 <input type="text" id="name" class="custom-form-control" value="{{ $user->name }}" disabled>
                                 <div class="status-box">
-                                    <i class="fas fa-lock text-muted" style="font-size: 0.8rem;"></i>
+                                    <i class="fas fa-lock text-muted icon-sm"></i>
                                 </div>
                             </div>
                             <div class="form-text ms-1 text-muted small opacity-50">Nama hanya dapat diubah oleh Admin.</div>
@@ -58,7 +56,7 @@
                                 </div>
                                 <input type="email" id="email" class="custom-form-control" value="{{ $user->email }}" disabled>
                                 <div class="status-box">
-                                    <i class="fas fa-lock text-muted" style="font-size: 0.8rem;"></i>
+                                    <i class="fas fa-lock text-muted icon-sm"></i>
                                 </div>
                             </div>
                         </div>
